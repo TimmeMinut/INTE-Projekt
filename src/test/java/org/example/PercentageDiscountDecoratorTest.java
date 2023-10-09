@@ -1,36 +1,39 @@
 package org.example;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class PercentageDiscountDecoratorTest {
 
     @Test
-    void percentageDiscountDecorator_ShouldWorkOnSingleProduct() {
-        Product product = new ConcreteProduct("p1", 29.99);
+    @DisplayName("")
+    void Percentage_discount_is_appled_to_single_product() {
+        // given
+        final double DISCOUNT_PERCENTAGE = 0.5;
+        Product product = new ConcreteProduct("productName", 29.99);
 
-        Product discountDecorator = new PercentageDiscountDecorator(product, 0.5);
+        // when
+        Product discountDecorator = new PercentageDiscountDecorator(product, DISCOUNT_PERCENTAGE);
 
-        System.out.println("Product 1 price: " + product.getPrice());
-        System.out.println("Discounted price: " + discountDecorator.getPrice());
+        // then
         Assertions.assertEquals(14.995, discountDecorator.getPrice());
     }
 
     @Test
-    void percentageDiscountDecorator_ShouldWorkOnProductGroup() {
-        Product p1 = new ConcreteProduct("p1", 10);
-        Product p2 = new ConcreteProduct("p1", 20);
+    void Percentage_discount_is_applied_to_product_group() {
+        // given
+        Product product1 = new ConcreteProduct("productName", 10);
+        Product product2 = new ConcreteProduct("productName", 20);
 
         ProductGroup productGroup = new ProductGroup();
-        productGroup.addProduct(p1);
-        productGroup.addProduct(p2);
+        productGroup.addProduct(product1);
+        productGroup.addProduct(product2);
 
+        // when
         Product discountDecorator = new PercentageDiscountDecorator(productGroup, 0.5);
 
-        System.out.println("Product 1 price: " + p1.getPrice());
-        System.out.println("Product 2 price: " + p2.getPrice());
-        System.out.println("Group price: " + productGroup.getPrice());
-        System.out.println("Discounted group price: " + discountDecorator.getPrice());
+        // then
         Assertions.assertEquals(15, discountDecorator.getPrice());
     }
 }
