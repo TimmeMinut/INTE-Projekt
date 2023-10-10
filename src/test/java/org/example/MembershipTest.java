@@ -32,6 +32,22 @@ public class MembershipTest {
         customer.becomeMember();
 
         // Then
-        assertNotNull(customer.getMembership().getStartingDateTime());
+        assertNotEquals(null, customer.getMembership().getStartingDateTime());
+    }
+
+    @Test
+    void Membership_starting_date_is_formatted_correctly() {
+        // Given
+        Customer customer = VALID_CUSTOMER;
+        customer.becomeMember();
+        Membership membership = customer.getMembership();
+        String correctDateTimeFormat = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}";
+
+
+        // When
+        String formattedDateTime = membership.getStartingDateTimeFormatted();
+
+        // Then
+        assertTrue(formattedDateTime.matches(correctDateTimeFormat));
     }
 }
