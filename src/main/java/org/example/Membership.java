@@ -6,10 +6,18 @@ public class Membership {
     // För att testa krävs subklasser/interface ?
     // Se Henriks video om mock-objekt / test-doubles
     private LocalDateTime startingDate;
+    private Customer customer;
 
-    public Membership() {
+    public Membership(Customer customer) {
+        this.customer = customer;
         startingDate = LocalDateTime.now();
     }
 
+    public LocalDateTime getStartingDate() {
+        return startingDate;
+    }
 
+    public Customer getCustomer() {
+        return customer;
+    }
 }
