@@ -6,7 +6,7 @@ public class CheckoutSystem {
     // TODO Different data structure, HashMap?
     private ArrayList<Product> basket = new ArrayList<>();
 
-    public void addProduct(Product product) {
+    public void registerProduct(Product product) {
         basket.add(product);
     }
 
@@ -22,9 +22,10 @@ public class CheckoutSystem {
 
     public void removeProduct(String productName) {
         Product product = getProduct(productName);
-        if (basket.contains(product)) {
-            basket.remove(product);
-        }
+
+        if (!basket.contains(product)) { throw new IllegalArgumentException(); }
+
+        basket.remove(product);
     }
 
     public boolean contains(Product product) {
@@ -32,5 +33,24 @@ public class CheckoutSystem {
             return true;
         }
         return false;
+    }
+
+    public double getTotal() {
+        double totalSum = 0;
+        for (Product product: basket) {
+            totalSum += product.getPrice();
+        }
+        return totalSum;
+    }
+
+    public void pay(Card card) {
+        double total = getTotal();
+        double balance = card.getBalance();
+
+        if (total > balance) {
+            // TODO How to handle this?
+        }
+
+        card.debit(total);
     }
 }
