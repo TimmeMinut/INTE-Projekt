@@ -32,16 +32,13 @@ public class Money {
         return new Money(amount + amountOfMinorUnit);
     }
 
-
     public Money subtract(long amountOfMinorUnit) {
         return new Money(amount - amountOfMinorUnit);
     }
-
 
     @Override
     public String toString() {
         return String.format("%d.%d", getAmountOfMajorUnit(), getAmountOfMinorUnit());
     }
-
 
 }
