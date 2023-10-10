@@ -36,6 +36,7 @@ public class Customer {
     }
 
     public void becomeMember() {
+        if (this.membership != null) return;
         membership = new Membership(this);
     }
 }
