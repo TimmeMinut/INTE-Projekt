@@ -33,4 +33,8 @@ public class CheckoutSystem {
         }
         return false;
     }
+
+    public int getTotalPrice() {
+        return 0;
+    }
 }
