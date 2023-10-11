@@ -10,7 +10,7 @@ class CheckoutSystemTest {
     void Product_is_added_to_basket() {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem();
-        Product product = new Product("productName");
+        Product product = new Product("productName", 1, Product.ProductCategory.STANDARD);
 
         // when
         checkoutSystem.addProduct(product);
@@ -23,7 +23,7 @@ class CheckoutSystemTest {
     void Existing_product_is_removed_from_basket() {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem();
-        Product product = new Product("productName");
+        Product product = new Product("productName", 1, Product.ProductCategory.STANDARD);
         checkoutSystem.addProduct(product);
 
         // when
