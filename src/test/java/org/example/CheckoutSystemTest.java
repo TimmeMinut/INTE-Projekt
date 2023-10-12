@@ -1,6 +1,9 @@
 package org.example;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -108,5 +111,21 @@ class CheckoutSystemTest {
 
         // then
         assertEquals(112.5, discountArticles.getPrice());
+    }
+
+    @Test
+    void Static_Membership_Discount_is_applied() {
+        //given
+        final Customer MEMBER_CUSTOMER = new Customer("Miriam", "19990115-2345", 15000_00, 500_00);
+        MEMBER_CUSTOMER.becomeMember();
+
+        CheckoutSystem checkoutSystem = new CheckoutSystem(MEMBER_CUSTOMER);
+        Product product = new Product("productName", 100, Product.ProductCategory.STANDARD, false);
+        checkoutSystem.registerProduct(product);
+
+        // when
+
+        // then
+        assertEquals(99, checkoutSystem.getTotal());
     }
 }

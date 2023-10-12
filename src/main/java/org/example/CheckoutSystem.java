@@ -4,23 +4,28 @@ import java.util.ArrayList;
 
 public class CheckoutSystem {
     // TODO Different data structure, HashMap?
-    private final ArrayList<Article> basket = new ArrayList<>();
+    private Customer customer;
+    private final ArrayList<Product> basket = new ArrayList<>();
     private ArrayList<String> discountCodes = new ArrayList<>();
 
-    public void registerProduct(Article article) { basket.add(article); }
+    public CheckoutSystem(Customer currentCustomer) {
+        this.customer = currentCustomer;
+    }
 
-    public Article getProduct(String productName) {
-        Article p = null;
-        for (Article article: basket) {
-            if (productName.equals(article.getName())) {
-                p = article;
+    public void registerProduct(Product product) { basket.add(product); }
+
+    public Product getProduct(String productName) {
+        Product p = null;
+        for (Product product: basket) {
+            if (productName.equals(product.getName())) {
+                p = product;
             }
         }
         return p;
     }
 
     public void removeProduct(String productName) {
-        Article product = getProduct(productName);
+        Product product = getProduct(productName);
 
         if (!basket.contains(product)) { throw new IllegalArgumentException(); }
 
@@ -32,14 +37,35 @@ public class CheckoutSystem {
     }
 
     public double getTotal() {
-        if (!discountCodes.isEmpty()) {
-            return percentageDiscount();
-        } else {
-            double totalSum = 0;
-            for (Article product: basket) {
-                totalSum += product.getPrice();
-            }
-            return totalSum;
+        // TODO Here will all logic be
+        // Customer membership => rabatter?
+        // Produktkategorirabatter
+        // Produktrabatter
+        // Åldergräns, kundens ålder vs produkt
+        // Rabatt giltighetstid?
+
+        // kolla kundens berättigade rabatt
+        // kolla membership och rabatter
+
+        double totalSum = 0;
+        for (Product product: basket) {
+            totalSum += product.getPrice();
+        }
+        double discount = getMembershipDiscount();
+
+        return totalSum * ( 1 - discount);
+    }
+
+    private double getMembershipDiscount() {
+        switch (customer.getMembership().getLevel()) {
+            case "Bronze":
+                return 0.01;
+            case "Silver":
+                return 0.03;
+            case "Gold":
+                return 0.05;
+            default:
+                return 0;
         }
     }
 
@@ -58,7 +84,7 @@ public class CheckoutSystem {
         discountCodes.add(code);
     }
 
-    private double percentageDiscount() {
+    /*private double percentageDiscount() {
         ArticleGroup articleGroup = new ArticleGroup();
         for (Article article: basket) {
             articleGroup.addArticle(article);
@@ -66,7 +92,7 @@ public class CheckoutSystem {
 
         Article decorator =  new DiscountPercentageDecorator(articleGroup, 0.25);
         return decorator.getPrice();
-    }
+    }*/
 
     public int getTotalPrice() {
         return 0;
