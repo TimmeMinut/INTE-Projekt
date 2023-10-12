@@ -67,4 +67,8 @@ public class CheckoutSystem {
         Article decorator =  new DiscountPercentageDecorator(articleGroup, 0.25);
         return decorator.getPrice();
     }
+
+    public int getTotalPrice() {
+        return 0;
+    }
 }
