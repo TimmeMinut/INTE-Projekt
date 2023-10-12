@@ -1,44 +1,50 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
+// TODO Make compatible with HashMap
 public class CheckoutSystem {
-    // TODO Different data structure, HashMap?
     private Customer customer;
-    private final ArrayList<Product> basket = new ArrayList<>();
+    private final HashMap<Product, Integer> basket = new HashMap<Product,Integer>();
     private ArrayList<String> discountCodes = new ArrayList<>();
 
     public CheckoutSystem(Customer currentCustomer) {
         this.customer = currentCustomer;
     }
 
-    public void registerProduct(Product product) { basket.add(product); }
-
-    public Product getProduct(String productName) {
-        Product p = null;
-        for (Product product: basket) {
-            if (productName.equals(product.getName())) {
-                p = product;
-            }
-        }
-        return p;
+    public void registerProduct(Product product, int quantity) {
+        basket.put(product, quantity);
     }
 
-    public void removeProduct(String productName) {
-        Product product = getProduct(productName);
+//    public Product getProduct(String productName) {
+//        Product p = null;
+//        for (Product product : basket) {
+//            if (productName.equals(product.getName())) {
+//                p = product;
+//            }
+//        }
+//        return p;
+//    }
 
-        if (!basket.contains(product)) { throw new IllegalArgumentException(); }
+//    public void removeProduct(String productName) {
+//        Product product = getProduct(productName);
+//
+//        if (!basket.contains(product)) {
+//            throw new IllegalArgumentException();
+//        }
+//
+//        basket.remove(product);
+//    }
 
-        basket.remove(product);
-    }
-
-    public boolean contains(Product product) {
-        return basket.contains(product);
-    }
+//    public boolean contains(Product product) {
+//        return basket.contains(product);
+//    }
 
     public double getTotal() {
         // TODO Here will all logic be
-        // Customer membership => rabatter?
         // Produktkategorirabatter
         // Produktrabatter
         // Åldergräns, kundens ålder vs produkt
@@ -48,15 +54,29 @@ public class CheckoutSystem {
         // kolla membership och rabatter
 
         double totalSum = 0;
-        for (Product product: basket) {
-            totalSum += product.getPrice();
-        }
-        double discount = getMembershipDiscount();
+        for (Product product : basket.keySet()) {
+            int quantity = basket.get(product);
+            double quantityDiscount = getQuantityDiscount(product);
 
-        return totalSum * ( 1 - discount);
+            totalSum += (product.getPrice() * quantity) - quantityDiscount;
+        }
+
+        double membershipDiscount = 0;
+        if (customer.getMembership() != null) {
+            membershipDiscount = getMembershipDiscount();
+        }
+
+        return totalSum * (1 - membershipDiscount);
     }
 
-    private double getMembershipDiscount() {
+    private double getQuantityDiscount(Product product) {
+            int take = basket.get(product); // Quantity
+            int pay = product.getDiscount().get(take);
+
+            return (take - pay) * product.getPrice();
+    }
+
+    private double getMembershipDiscount() { // ev. decorator senare?
         switch (customer.getMembership().getLevel()) {
             case "Bronze":
                 return 0.01;
@@ -68,6 +88,19 @@ public class CheckoutSystem {
                 return 0;
         }
     }
+
+//    private double getProductSpecificDiscount(Product product) {
+//        long reduceBy = 0;
+//        if (!product.getDiscount().containsKey(null)) {
+//            Map<Integer, Integer> discount = product.getDiscount();
+//
+//            for (Map.Entry<Integer, Integer> entry : discount.entrySet()) {
+//                reduceBy = entry.getKey() - entry.getValue();
+//            }
+//            reduceBy = (long) product.getPrice() * reduceBy;
+//        }
+//        return reduceBy;
+//    }
 
     public void pay(Card card) {
         double total = getTotal();

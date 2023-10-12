@@ -1,5 +1,9 @@
 package org.example;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 public class Product {
     private String name;
     private int VATExclusive; //price exclusing VAT
@@ -7,6 +11,10 @@ public class Product {
     private boolean deposit;
     private double VATValue;
     private double price;
+    private Map<Integer,Integer> discount = new HashMap<Integer,Integer>();
+
+
+
 
 
 
@@ -29,7 +37,7 @@ public class Product {
     }
 
     private void calculateVATValue() {
-        VATValue = VATExclusive * (productCategory.VATRate + 1);
+        VATValue = VATExclusive * productCategory.VATRate;
     }
 
     public String getName() {
@@ -44,12 +52,18 @@ public class Product {
         return VATValue;
     }
 
-    public void putUpForSale(int i, int i1) {
+    public Map<Integer,Integer> getDiscount() { // Ev. refaktorering senare
+        return discount;
+    }
+
+    public void putUpForSale(int take, int pay) {
+        this.discount.put(take,pay);
     }
 
     public double getPrice() {
         return price;
     }
+
 
     public enum ProductCategory {
         BOOK(0.06),

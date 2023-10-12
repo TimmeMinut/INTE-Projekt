@@ -37,30 +37,30 @@ public class ProductTest {
     void calculatePriceIncludingDeposit(){
         Product product = new Product("Coke", 12, Product.ProductCategory.FOOD, true);
 
-        assertEquals(12 + (12 * 1.12) + 2, product.getPrice());
+        assertEquals(12 * 1.12 + 2, product.getPrice());
     }
 
     @Test
     void calculatePriceExcludingDeposit(){
         Product product = new Product("Twix", 12, Product.ProductCategory.FOOD, false);
 
-        assertEquals(12 + (12 * 1.12), product.getPrice());
+        assertEquals(12 * 1.12, product.getPrice());
     }
     
     @Test
     void Product_is_put_up_for_sale(){
         //given
         Product product = new Product("pen", 17, Product.ProductCategory.STANDARD, true);
-        CheckoutSystem checkoutSystem = new CheckoutSystem();
+        Customer customer = new Customer("Miriam", "19990115-2345", 15000_00, 500_00);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
 
         //when
-        product.putUpForSale(3, 2); //Pick 3 pay for 2
-        for (int i = 0; i <3; i++){
-            checkoutSystem.addProduct(product); //Add 3 pens to basket
-        }
+        product.putUpForSale(3, 2); // Pick 3 pay for 2
+        checkoutSystem.registerProduct(product, 3); // Add 3 pens to basket
+
 
         //then
-        assertEquals(17 * 2, checkoutSystem.getTotalPrice());
+        assertEquals(23.25 * 2, checkoutSystem.getTotal());
     }
 
 

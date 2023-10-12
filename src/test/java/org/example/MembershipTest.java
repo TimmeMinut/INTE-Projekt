@@ -65,7 +65,7 @@ public class MembershipTest {
         Membership membership = customer.getMembership();
 
         // When
-        customer.checksOut();
+//        customer.checksOut();
         membership.increasePoints(1000_00);
 
         // Then
