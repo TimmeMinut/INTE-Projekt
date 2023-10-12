@@ -19,7 +19,7 @@ class CheckoutSystemTest {
         Product product = VALID_PRODUCT;
 
         // when
-        checkoutSystem.registerProduct(product, 1);
+        checkoutSystem.registerProduct(product);
 
         // then
         assertEquals(product, checkoutSystem.getProduct("productName"));
@@ -30,7 +30,7 @@ class CheckoutSystemTest {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
         Product product = VALID_PRODUCT;
-        checkoutSystem.registerProduct(product, 1);
+        checkoutSystem.registerProduct(product);
 
         // when
         checkoutSystem.removeProduct("productName");
@@ -55,7 +55,7 @@ class CheckoutSystemTest {
         Product product = new Product("productName", 29, Product.ProductCategory.STANDARD, false);
 
         // when
-        checkoutSystem.registerProduct(product, 1);
+        checkoutSystem.registerProduct(product);
 
         // then
         assertEquals(29, checkoutSystem.getTotal());
@@ -75,7 +75,7 @@ class CheckoutSystemTest {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
         Product product = VALID_PRODUCT;
-        checkoutSystem.registerProduct(VALID_PRODUCT, 1);
+        checkoutSystem.registerProduct(VALID_PRODUCT);
         Card card = new Card(100);
 
         // when
@@ -125,7 +125,7 @@ class CheckoutSystemTest {
 
         CheckoutSystem checkoutSystem = new CheckoutSystem(MEMBER_CUSTOMER);
         Product product = new Product("productName", 100, Product.ProductCategory.STANDARD, false);
-        checkoutSystem.registerProduct(product, 1);
+        checkoutSystem.registerProduct(product);
 
         // when
 

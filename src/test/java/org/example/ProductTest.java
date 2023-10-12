@@ -34,21 +34,21 @@ public class ProductTest {
     }
 
     @Test
-    void calculatePriceIncludingDeposit(){
+    void calculatePriceIncludingDeposit() {
         Product product = new Product("Coke", 12, Product.ProductCategory.FOOD, true);
 
         assertEquals(12 * 1.12 + 2, product.getPrice());
     }
 
     @Test
-    void calculatePriceExcludingDeposit(){
+    void calculatePriceExcludingDeposit() {
         Product product = new Product("Twix", 12, Product.ProductCategory.FOOD, false);
 
         assertEquals(12 * 1.12, product.getPrice());
     }
-    
+
     @Test
-    void Product_is_put_up_for_sale(){
+    void Product_is_put_up_for_sale() {
         //given
         Product product = new Product("pen", 17, Product.ProductCategory.STANDARD, true);
         Customer customer = new Customer("Miriam", "19990115-2345", 15000_00, 500_00);
@@ -56,7 +56,9 @@ public class ProductTest {
 
         //when
         product.putUpForSale(3, 2); // Pick 3 pay for 2
-        checkoutSystem.registerProduct(product, 3); // Add 3 pens to basket
+        for (int i = 0; i < 3; i++) {
+            checkoutSystem.registerProduct(product); // Add 3 pens to basket
+        }
 
 
         //then
@@ -65,17 +67,17 @@ public class ProductTest {
 
 
     @Test
-    void ProductCategory_is_put_for_sale(){
+    void ProductCategory_is_put_for_sale() {
 
     }
 
     @Test
-    void Product_sale_is_taken_down(){
+    void Product_sale_is_taken_down() {
 
     }
 
     @Test
-    void ProductCategory_sale_is_taken_down(){
+    void ProductCategory_sale_is_taken_down() {
 
     }
 }

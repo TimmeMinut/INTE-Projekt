@@ -15,17 +15,15 @@ public class CheckoutSystem {
         this.customer = currentCustomer;
     }
 
-    public void registerProduct(Product product, int quantity) { // TODO möjligen ändra implementation
-        basket.put(product, quantity);
-    }
-    /* Alt. implementation, som gör +1 quantity. Isåf måste removeProduct ändras till -1 quantity
-    if (!basket.containsKey(product)) {
+    public void registerProduct(Product product) {
+        if (!basket.containsKey(product)) {
             basket.put(product, 1);
         } else {
             int quantity = basket.get(product);
             basket.put(product, ++quantity); // Skriver över tidigare quantity med +1
         }
-    * */
+    }
+
 
     public Product getProduct(String productName) {
         Product p = null;
@@ -44,7 +42,12 @@ public class CheckoutSystem {
             throw new IllegalArgumentException();
         }
 
-        basket.remove(product);
+        if (basket.get(product) == 1) { // Om det bara finns 1 av produkten
+            basket.remove(product);
+        } else {
+            int quantity = basket.get(product);
+            basket.put(product, --quantity); // Skriver över tidigare quantity med -1
+        }
     }
 
     public boolean contains(Product product) {
