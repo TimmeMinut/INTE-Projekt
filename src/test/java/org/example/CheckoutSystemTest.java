@@ -72,9 +72,29 @@ class CheckoutSystemTest {
         checkoutSystem.registerProduct(product);
         Card card = new Card(100);
 
-        // then
+        // when
         checkoutSystem.pay(card);
 
+        // then
         assertEquals(70.01, card.getBalance());
+    }
+
+    @Test
+    void Discount_percentage_code() {
+        // given
+         final String discountCode25Percent = "HENRIK25";
+
+        CheckoutSystem checkoutSystem = new CheckoutSystem();
+        Article article1 = new ConcreteArticle(100);
+        Article article2 = new ConcreteArticle(50);
+        ArticleGroup articleGroup = new ArticleGroup();
+        articleGroup.addArticle(article1);
+        articleGroup.addArticle(article2);
+
+        // when
+        Article discountArticles = new DiscountPercentageDecorator(articleGroup, 0.25);
+
+        // then
+        assertEquals(112.5, discountArticles.getPrice());
     }
 }

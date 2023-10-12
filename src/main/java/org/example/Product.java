@@ -1,6 +1,6 @@
 package org.example;
 
-public class Product {
+public class Product implements Article{
     private String name;
     private double price;
 
