@@ -9,94 +9,96 @@ import static org.junit.jupiter.api.Assertions.*;
 
 // TODO Make compatible with latest updates
 class CheckoutSystemTest {
-    public static final Customer VALID_CUSTOMER = new Customer("Bob", "20001231-1234", 15000_00, 500_00);
+    public static final Customer VALID_CUSTOMER = new Customer("customerName", "20001231-1234", 15000_00, 500_00);
+
+    public static final Product VALID_PRODUCT = new Product("productName", 20, Product.ProductCategory.STANDARD, false);
     @Test
     void Product_is_added_to_basket() {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
-//        Product product = new Product("productName");
+        Product product = VALID_PRODUCT;
 
         // when
-//        checkoutSystem.registerProduct(product);
+        checkoutSystem.registerProduct(product, 1);
 
         // then
-//        assertEquals(product, checkoutSystem.getProduct("productName"));
+        assertEquals(product, checkoutSystem.getProduct("productName"));
     }
 
     @Test
     void Existing_product_is_removed_from_basket() {
         // given
-//        CheckoutSystem checkoutSystem = new CheckoutSystem();
-//        Product product = new Product("productName");
-//        checkoutSystem.registerProduct(product);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
+        Product product = VALID_PRODUCT;
+        checkoutSystem.registerProduct(product, 1);
 
         // when
-//        checkoutSystem.removeProduct("productName");
+        checkoutSystem.removeProduct("productName");
 
         // then
-//        assertFalse(checkoutSystem.contains(product));
+        assertFalse(checkoutSystem.contains(product));
     }
 
     @Test
     void Removing_non_existing_product_from_basket_throws_exception() {
         // given
-//        CheckoutSystem checkoutSystem = new CheckoutSystem();
+        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
 
         // then
-//        assertThrows(IllegalArgumentException.class, () -> checkoutSystem.removeProduct("productname"));
+        assertThrows(IllegalArgumentException.class, () -> checkoutSystem.removeProduct("productName"));
     }
 
     @Test
     void Display_checkout_sum_with_product_registered() {
         // given
-//        CheckoutSystem checkoutSystem = new CheckoutSystem();
-//        Product product = new Product("productName", 29.99);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
+        Product product = new Product("productName", 29, Product.ProductCategory.STANDARD, false);
 
         // when
-//        checkoutSystem.registerProduct(product);
+        checkoutSystem.registerProduct(product, 1);
 
         // then
-//        assertEquals(29.99, checkoutSystem.getTotal());
+        assertEquals(29, checkoutSystem.getTotal());
     }
 
     @Test
     void Empty_basket_show_zero_in_total() {
         // given
-//        CheckoutSystem checkoutSystem = new CheckoutSystem();
+        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
 
         // then
-//        assertEquals(0, checkoutSystem.getTotal());
+        assertEquals(0, checkoutSystem.getTotal());
     }
 
     @Test
     void Card_payment_with_enough_money() {
         // given
-//        CheckoutSystem checkoutSystem = new CheckoutSystem();
-//        Product product = new Product("productName", 29.99);
-//        checkoutSystem.registerProduct(product);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
+        Product product = VALID_PRODUCT;
+        checkoutSystem.registerProduct(VALID_PRODUCT, 1);
         Card card = new Card(100);
 
         // when
-//        checkoutSystem.pay(card);
+        checkoutSystem.pay(card);
 
         // then
         assertEquals(70.01, card.getBalance());
     }
 
     @Test
-    void Percentage_discount() {
+    void Percentage_discount() { // Testfall ska möjligen ändras eller raderas?
         // given
-//        CheckoutSystem checkoutSystem = new CheckoutSystem();
+        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
         Article article1 = new ConcreteArticle(100);
         Article article2 = new ConcreteArticle(50);
-//        checkoutSystem.registerProduct(article1);
-//        checkoutSystem.registerProduct(article2);
+        // checkoutSystem.registerProduct(article1);
+        // checkoutSystem.registerProduct(article2);
 
         // when
-//        checkoutSystem.registerDiscountCode("25");
+        checkoutSystem.registerDiscountCode("25");
 
         // then
-//        assertEquals(112.5, checkoutSystem.getTotal());
+        assertEquals(112.5, checkoutSystem.getTotal());
     }
 
     @Test

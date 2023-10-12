@@ -8,46 +8,54 @@ import java.util.Set;
 // TODO Make compatible with HashMap
 public class CheckoutSystem {
     private Customer customer;
-    private final HashMap<Product, Integer> basket = new HashMap<Product,Integer>();
+    private final Map<Product, Integer> basket = new HashMap<>();
     private ArrayList<String> discountCodes = new ArrayList<>();
 
     public CheckoutSystem(Customer currentCustomer) {
         this.customer = currentCustomer;
     }
 
-    public void registerProduct(Product product, int quantity) {
+    public void registerProduct(Product product, int quantity) { // TODO möjligen ändra implementation
         basket.put(product, quantity);
     }
+    /* Alt. implementation, som gör +1 quantity. Isåf måste removeProduct ändras till -1 quantity
+    if (!basket.containsKey(product)) {
+            basket.put(product, 1);
+        } else {
+            int quantity = basket.get(product);
+            basket.put(product, ++quantity); // Skriver över tidigare quantity med +1
+        }
+    * */
 
-//    public Product getProduct(String productName) {
-//        Product p = null;
-//        for (Product product : basket) {
-//            if (productName.equals(product.getName())) {
-//                p = product;
-//            }
-//        }
-//        return p;
-//    }
+    public Product getProduct(String productName) {
+        Product p = null;
+        for (Product product : basket.keySet()) {
+            if (productName.equals(product.getName())) {
+                p = product;
+            }
+        }
+        return p;
+    }
 
-//    public void removeProduct(String productName) {
-//        Product product = getProduct(productName);
-//
-//        if (!basket.contains(product)) {
-//            throw new IllegalArgumentException();
-//        }
-//
-//        basket.remove(product);
-//    }
+    public void removeProduct(String productName) {
+        Product product = getProduct(productName);
 
-//    public boolean contains(Product product) {
-//        return basket.contains(product);
-//    }
+        if (!basket.containsKey(product)) {
+            throw new IllegalArgumentException();
+        }
+
+        basket.remove(product);
+    }
+
+    public boolean contains(Product product) {
+        return basket.containsKey(product);
+    }
 
     public double getTotal() {
         // TODO Here will all logic be
         // Produktkategorirabatter
         // Produktrabatter
-        // Åldergräns, kundens ålder vs produkt
+        // Åldersgräns, kundens ålder vs produkt
         // Rabatt giltighetstid?
 
         // kolla kundens berättigade rabatt
@@ -89,19 +97,6 @@ public class CheckoutSystem {
         }
     }
 
-//    private double getProductSpecificDiscount(Product product) {
-//        long reduceBy = 0;
-//        if (!product.getDiscount().containsKey(null)) {
-//            Map<Integer, Integer> discount = product.getDiscount();
-//
-//            for (Map.Entry<Integer, Integer> entry : discount.entrySet()) {
-//                reduceBy = entry.getKey() - entry.getValue();
-//            }
-//            reduceBy = (long) product.getPrice() * reduceBy;
-//        }
-//        return reduceBy;
-//    }
-
     public void pay(Card card) {
         double total = getTotal();
         double balance = card.getBalance();
@@ -127,7 +122,5 @@ public class CheckoutSystem {
         return decorator.getPrice();
     }*/
 
-    public int getTotalPrice() {
-        return 0;
-    }
+
 }
