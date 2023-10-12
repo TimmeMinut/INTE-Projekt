@@ -1,7 +1,7 @@
 package org.example;
 
 public class Product implements Article{
-    private String name;
+    private final String name;
     private double price;
 
     public Product(String name) {

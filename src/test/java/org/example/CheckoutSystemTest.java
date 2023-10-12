@@ -36,7 +36,6 @@ class CheckoutSystemTest {
     void Removing_non_existing_product_from_basket_throws_exception() {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem();
-        Product product = new Product("productName");
 
         // then
         assertThrows(IllegalArgumentException.class, () -> checkoutSystem.removeProduct("productname"));

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class CheckoutSystem {
     // TODO Different data structure, HashMap?
-    private ArrayList<Article> basket = new ArrayList<>();
+    private final ArrayList<Article> basket = new ArrayList<>();
     private ArrayList<String> discountCodes = new ArrayList<>();
 
     public void registerProduct(Article article) { basket.add(article); }
@@ -28,10 +28,7 @@ public class CheckoutSystem {
     }
 
     public boolean contains(Product product) {
-        if (basket.contains(product)) {
-            return true;
-        }
-        return false;
+        return basket.contains(product);
     }
 
     public double getTotal() {
