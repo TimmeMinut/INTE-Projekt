@@ -35,12 +35,15 @@ public class CheckoutSystem {
     }
 
     public double getTotal() {
-        double totalSum = 0;
-        for (Article product: basket) {
-            totalSum += product.getPrice();
+        if (!discountCodes.isEmpty()) {
+            return percentageDiscount();
+        } else {
+            double totalSum = 0;
+            for (Article product: basket) {
+                totalSum += product.getPrice();
+            }
+            return totalSum;
         }
-        return totalSum;
-
     }
 
     public void pay(Card card) {
@@ -59,11 +62,11 @@ public class CheckoutSystem {
     }
 
     private double percentageDiscount() {
-
         ArticleGroup articleGroup = new ArticleGroup();
         for (Article article: basket) {
             articleGroup.addArticle(article);
         }
+
         Article decorator =  new DiscountPercentageDecorator(articleGroup, 0.25);
         return decorator.getPrice();
     }

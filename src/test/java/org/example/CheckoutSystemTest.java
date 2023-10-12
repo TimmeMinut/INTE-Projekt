@@ -80,11 +80,24 @@ class CheckoutSystemTest {
     }
 
     @Test
-    void Discount_percentage_code() {
+    void Percentage_discount() {
         // given
-         final String discountCode25Percent = "HENRIK25";
-
         CheckoutSystem checkoutSystem = new CheckoutSystem();
+        Article article1 = new ConcreteArticle(100);
+        Article article2 = new ConcreteArticle(50);
+        checkoutSystem.registerProduct(article1);
+        checkoutSystem.registerProduct(article2);
+
+        // when
+        checkoutSystem.registerDiscountCode("25");
+
+        // then
+        assertEquals(112.5, checkoutSystem.getTotal());
+    }
+
+    @Test
+    void Decorator() {
+        // given
         Article article1 = new ConcreteArticle(100);
         Article article2 = new ConcreteArticle(50);
         ArticleGroup articleGroup = new ArticleGroup();
