@@ -10,7 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MembershipTest {
     public static final Customer VALID_CUSTOMER = new Customer("Bob", "20001231-1234", 15000_00, 500_00);
     public static final LocalDateTime VALID_DATE_TIME = LocalDateTime.of(2023, 1, 31, 15, 30);
-
+    public static final CheckoutSystem VALID_CHECKOUT_SYSTEM = new CheckoutSystem(VALID_CUSTOMER);
+    public static final Product VALID_PRODUCT = new Product("productName", 20_00, Product.ProductCategory.STANDARD, false);
 
 
     @Test
@@ -59,14 +60,30 @@ public class MembershipTest {
         // Given
         Customer customer = VALID_CUSTOMER;
         Membership membership = customer.getMembership();
-        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
-        Product product = new Product("Orange", 10_00, Product.ProductCategory.FOOD, false);
-        checkoutSystem.registerProduct(product);
+        CheckoutSystem checkoutSystem = VALID_CHECKOUT_SYSTEM;
+        Product product = VALID_PRODUCT;
+        checkoutSystem.registerProduct(VALID_PRODUCT);
 
         // When
         membership.increasePoints(checkoutSystem.getTotal()); // Payment ska vara checkoutSystem.getTotal efter att produkter registrerats
 
         // Then
-        assertEquals(5_00, membership.getPoints());
+        assertEquals(250_00, membership.getPoints());
+    }
+
+    @Test
+    void Membership_level_increases_at_1000_spent() {
+        // Given
+        Customer customer = VALID_CUSTOMER;
+        Membership membership = customer.getMembership();
+        CheckoutSystem checkoutSystem = VALID_CHECKOUT_SYSTEM;
+        Product expensiveProduct = new Product("Gold",1000_00, Product.ProductCategory.STANDARD, false);
+        checkoutSystem.registerProduct(expensiveProduct);
+
+        // When
+        membership.increasePoints(checkoutSystem.getTotal());
+
+        // Then
+        assertEquals("Silver",membership.getLevel());
     }
 }
