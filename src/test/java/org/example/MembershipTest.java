@@ -59,31 +59,34 @@ public class MembershipTest {
     void Bonus_points_increase_after_purchase() {
         // Given
         Customer customer = VALID_CUSTOMER;
+        customer.becomeMember();
         Membership membership = customer.getMembership();
         CheckoutSystem checkoutSystem = VALID_CHECKOUT_SYSTEM;
-        Product product = VALID_PRODUCT;
-        checkoutSystem.registerProduct(VALID_PRODUCT);
+        Product coffee = new Product("Coffee", 100_00, Product.ProductCategory.STANDARD, false);
+        checkoutSystem.registerProduct(coffee);
+        long payment = checkoutSystem.getTotal();
 
         // When
-        membership.increasePoints(checkoutSystem.getTotal()); // Payment ska vara checkoutSystem.getTotal efter att produkter registrerats
+        membership.increasePoints(payment);
 
         // Then
-        assertEquals(250_00, membership.getPoints());
+        assertEquals(125_00, membership.getPoints());
     }
 
     @Test
-    void Membership_level_increases_at_1000_spent() {
+    void Membership_level_increases_at_1000_points() {
         // Given
         Customer customer = VALID_CUSTOMER;
+        customer.becomeMember();
         Membership membership = customer.getMembership();
         CheckoutSystem checkoutSystem = VALID_CHECKOUT_SYSTEM;
-        Product expensiveProduct = new Product("Gold",1000_00, Product.ProductCategory.STANDARD, false);
+        Product expensiveProduct = new Product("Gold", 1000_00, Product.ProductCategory.STANDARD, false);
         checkoutSystem.registerProduct(expensiveProduct);
 
         // When
         membership.increasePoints(checkoutSystem.getTotal());
 
         // Then
-        assertEquals("Silver",membership.getLevel());
+        assertEquals("Silver", membership.getLevel());
     }
 }
