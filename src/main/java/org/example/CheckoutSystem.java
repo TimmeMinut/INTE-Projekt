@@ -3,9 +3,7 @@ package org.example;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
-// TODO Make compatible with HashMap
 public class CheckoutSystem {
     private Customer customer;
     private final Map<Product, Integer> basket = new HashMap<>();
@@ -42,7 +40,7 @@ public class CheckoutSystem {
             throw new IllegalArgumentException();
         }
 
-        if (basket.get(product) == 1) { // Om det bara finns 1 av produkten
+        if (basket.get(product) == 1) { // Om det bara finns 1 av produkten tas entry bort
             basket.remove(product);
         } else {
             int quantity = basket.get(product);
@@ -54,7 +52,7 @@ public class CheckoutSystem {
         return basket.containsKey(product);
     }
 
-    public double getTotal() {
+    public long getTotal() {
         // TODO Here will all logic be
         // Produktkategorirabatter
         // Produktrabatter
@@ -64,10 +62,10 @@ public class CheckoutSystem {
         // kolla kundens berättigade rabatt
         // kolla membership och rabatter
 
-        double totalSum = 0;
+        long totalSum = 0;
         for (Product product : basket.keySet()) {
             int quantity = basket.get(product);
-            double quantityDiscount = getQuantityDiscount(product);
+            long quantityDiscount = getQuantityDiscount(product);
 
             totalSum += (product.getPrice() * quantity) - quantityDiscount;
         }
@@ -77,12 +75,12 @@ public class CheckoutSystem {
             membershipDiscount = getMembershipDiscount();
         }
 
-        return totalSum * (1 - membershipDiscount);
+        return (long) (totalSum * (1 - membershipDiscount));
     }
 
-    private double getQuantityDiscount(Product product) {
+    private long getQuantityDiscount(Product product) {
             int take = basket.get(product); // Quantity
-            int pay = product.getDiscount().get(take);
+            int pay = product.getQuantityDiscount().get(take); // vad händer här om Quant.Disc ej finns?
 
             return (take - pay) * product.getPrice();
     }
@@ -101,8 +99,8 @@ public class CheckoutSystem {
     }
 
     public void pay(Card card) {
-        double total = getTotal();
-        double balance = card.getBalance();
+        long total = getTotal();
+        long balance = card.getBalance();
 
         if (total > balance) {
             // TODO How to handle this?

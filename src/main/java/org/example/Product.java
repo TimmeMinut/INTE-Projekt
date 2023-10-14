@@ -2,23 +2,22 @@ package org.example;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class Product {
     private String name;
-    private int VATExclusive; //price exclusing VAT
+    private long VATExclusive; //price excluding VAT
     private ProductCategory productCategory;
     private boolean deposit;
-    private double VATValue;
-    private double price;
-    private Map<Integer,Integer> discount = new HashMap<Integer,Integer>();
+    private long VATValue;
+    private long price;
+    private Map<Integer,Integer> quantityDiscount = new HashMap<Integer,Integer>();
 
 
 
 
 
 
-    public Product(String name, int VATExclusive, ProductCategory productCategory, boolean deposit) {
+    public Product(String name, long VATExclusive, ProductCategory productCategory, boolean deposit) {
         this.name = name;
         this.VATExclusive = VATExclusive;
         this.deposit = deposit;
@@ -32,35 +31,35 @@ public class Product {
         price = VATExclusive + VATValue;
 
         if(deposit){
-            price += 2;
+            price += 2_00;
         }
     }
 
     private void calculateVATValue() {
-        VATValue = VATExclusive * productCategory.VATRate;
+        VATValue = (long) (VATExclusive * productCategory.VATRate);
     }
 
     public String getName() {
         return name;
     }
 
-    public int getVATExclusive(){
+    public long getVATExclusive(){
         return VATExclusive;
     }
 
-    public double getVATValue() {
+    public long getVATValue() {
         return VATValue;
     }
 
-    public Map<Integer,Integer> getDiscount() { // Ev. refaktorering senare
-        return discount;
+    public Map<Integer,Integer> getQuantityDiscount() { // Ev. refaktorering senare
+        return quantityDiscount;
     }
 
     public void putUpForSale(int take, int pay) {
-        this.discount.put(take,pay);
+        this.quantityDiscount.put(take,pay);
     }
 
-    public double getPrice() {
+    public long getPrice() {
         return price;
     }
 

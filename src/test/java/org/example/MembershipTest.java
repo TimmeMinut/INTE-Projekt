@@ -59,13 +59,14 @@ public class MembershipTest {
         // Given
         Customer customer = VALID_CUSTOMER;
         Membership membership = customer.getMembership();
-        // Här behövs produkter och checkoutSystem
+        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
+        Product product = new Product("Orange", 10_00, Product.ProductCategory.FOOD, false);
+        checkoutSystem.registerProduct(product);
 
         // When
-//        customer.checksOut();
-        membership.increasePoints(1000_00); // Payment ska vara checkoutSystem.getTotal efter att produkter registrerats
+        membership.increasePoints(checkoutSystem.getTotal()); // Payment ska vara checkoutSystem.getTotal efter att produkter registrerats
 
         // Then
-        assertEquals(250, membership.getPoints());
+        assertEquals(5_00, membership.getPoints());
     }
 }

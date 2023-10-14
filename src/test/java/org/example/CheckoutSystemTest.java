@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CheckoutSystemTest {
     public static final Customer VALID_CUSTOMER = new Customer("customerName", "20001231-1234", 15000_00, 500_00);
 
-    public static final Product VALID_PRODUCT = new Product("productName", 20, Product.ProductCategory.STANDARD, false);
+    public static final Product VALID_PRODUCT = new Product("productName", 20_00, Product.ProductCategory.STANDARD, false);
     @Test
     void Product_is_added_to_basket() {
         // given
@@ -52,13 +52,13 @@ class CheckoutSystemTest {
     void Display_checkout_sum_with_product_registered() {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
-        Product product = new Product("productName", 29, Product.ProductCategory.STANDARD, false);
+        Product product = new Product("productName", 29_00, Product.ProductCategory.STANDARD, false);
 
         // when
         checkoutSystem.registerProduct(product);
 
         // then
-        assertEquals(29, checkoutSystem.getTotal());
+        assertEquals(29_00, checkoutSystem.getTotal());
     }
 
     @Test
@@ -76,21 +76,21 @@ class CheckoutSystemTest {
         CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
         Product product = VALID_PRODUCT;
         checkoutSystem.registerProduct(VALID_PRODUCT);
-        Card card = new Card(100);
+        Card card = new Card(100_00);
 
         // when
         checkoutSystem.pay(card);
 
         // then
-        assertEquals(70.01, card.getBalance());
+        assertEquals(70_01, card.getBalance());
     }
 
     @Test
     void Percentage_discount() { // Testfall ska möjligen ändras eller raderas?
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
-        Article article1 = new ConcreteArticle(100);
-        Article article2 = new ConcreteArticle(50);
+        Article article1 = new ConcreteArticle(100_00);
+        Article article2 = new ConcreteArticle(50_00);
         // checkoutSystem.registerProduct(article1);
         // checkoutSystem.registerProduct(article2);
 
@@ -98,14 +98,14 @@ class CheckoutSystemTest {
         checkoutSystem.registerDiscountCode("25");
 
         // then
-        assertEquals(112.5, checkoutSystem.getTotal());
+        assertEquals(112_5, checkoutSystem.getTotal());
     }
 
     @Test
     void Decorator() {
         // given
-        Article article1 = new ConcreteArticle(100);
-        Article article2 = new ConcreteArticle(50);
+        Article article1 = new ConcreteArticle(100_00);
+        Article article2 = new ConcreteArticle(50_00);
         ArticleGroup articleGroup = new ArticleGroup();
         articleGroup.addArticle(article1);
         articleGroup.addArticle(article2);
@@ -114,7 +114,7 @@ class CheckoutSystemTest {
         Article discountArticles = new DiscountPercentageDecorator(articleGroup, 0.25);
 
         // then
-        assertEquals(112.5, discountArticles.getPrice());
+        assertEquals(112_5, discountArticles.getPrice());
     }
 
     @Test
@@ -124,12 +124,12 @@ class CheckoutSystemTest {
         MEMBER_CUSTOMER.becomeMember();
 
         CheckoutSystem checkoutSystem = new CheckoutSystem(MEMBER_CUSTOMER);
-        Product product = new Product("productName", 100, Product.ProductCategory.STANDARD, false);
+        Product product = new Product("productName", 100_00, Product.ProductCategory.STANDARD, false);
         checkoutSystem.registerProduct(product);
 
         // when
 
         // then
-        assertEquals(99, checkoutSystem.getTotal());
+        assertEquals(99_00, checkoutSystem.getTotal());
     }
 }

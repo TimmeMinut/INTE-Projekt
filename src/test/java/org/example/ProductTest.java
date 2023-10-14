@@ -9,48 +9,48 @@ public class ProductTest {
     @Test
     void VAT_is_calculated_on_books() {
         // given
-        Product product = new Product("journal", 25, Product.ProductCategory.BOOK, true);
+        Product product = new Product("journal", 25_00, Product.ProductCategory.BOOK, true);
 
         // when && then
-        assertEquals(25 * 1.06, product.getVATValue());
+        assertEquals(25_00 * 1.06, product.getVATValue());
     }
 
     @Test
     void VAT_is_calculated_on_food() {
         // given
-        Product product = new Product("Twix", 12, Product.ProductCategory.FOOD, true);
+        Product product = new Product("Twix", 12_00, Product.ProductCategory.FOOD, true);
 
         // when && then
-        assertEquals(12 * 1.12, product.getVATValue());
+        assertEquals(12_00 * 1.12, product.getVATValue());
     }
 
     @Test
     void VAT_is_calculated_on_standard() {
         // given
-        Product product = new Product("pen", 17, Product.ProductCategory.STANDARD, true);
+        Product product = new Product("pen", 17_00, Product.ProductCategory.STANDARD, true);
 
         // when && then
-        assertEquals(17 * 1.25, product.getVATValue());
+        assertEquals(17_00 * 1.25, product.getVATValue());
     }
 
     @Test
     void calculatePriceIncludingDeposit() {
-        Product product = new Product("Coke", 12, Product.ProductCategory.FOOD, true);
+        Product product = new Product("Coke", 12_00, Product.ProductCategory.FOOD, true);
 
-        assertEquals(12 * 1.12 + 2, product.getPrice());
+        assertEquals(12_00 * 1.12 + 2_00, product.getPrice());
     }
 
     @Test
     void calculatePriceExcludingDeposit() {
-        Product product = new Product("Twix", 12, Product.ProductCategory.FOOD, false);
+        Product product = new Product("Twix", 12_00, Product.ProductCategory.FOOD, false);
 
-        assertEquals(12 * 1.12, product.getPrice());
+        assertEquals(12_00 * 1.12, product.getPrice());
     }
 
     @Test
     void Product_is_put_up_for_sale() {
         //given
-        Product product = new Product("pen", 17, Product.ProductCategory.STANDARD, true);
+        Product product = new Product("pen", 17_00, Product.ProductCategory.STANDARD, true);
         Customer customer = new Customer("Miriam", "19990115-2345", 15000_00, 500_00);
         CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
 
@@ -62,7 +62,7 @@ public class ProductTest {
 
 
         //then
-        assertEquals(23.25 * 2, checkoutSystem.getTotal());
+        assertEquals(23_25 * 2, checkoutSystem.getTotal());
     }
 
 
