@@ -82,7 +82,6 @@ public class MembershipTest {
 
         // When
         membership.increasePoints(checkoutSystem.getTotal());
-        membership.changeLevel();
 
         // Then
         assertEquals("Silver",membership.getLevel());
