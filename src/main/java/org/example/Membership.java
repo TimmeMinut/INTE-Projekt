@@ -6,10 +6,10 @@ import java.time.format.DateTimeFormatter;
 public class Membership {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    // Se Henriks video om mock-objekt / test-doubles
+    // Se Henriks video om mock-objekt / test-doubles för att testa LocalDateTime
     private LocalDateTime startingDateTime;
     private Customer customer;
-    private int points;
+    private long points;
     private String level; // Bronze, Silver, Gold
 
     public Membership(Customer customer) {
@@ -31,7 +31,7 @@ public class Membership {
         return customer;
     }
 
-    public int getPoints() {
+    public long getPoints() {
         return points;
     }
 
@@ -40,21 +40,22 @@ public class Membership {
     }
 
     public void increasePoints(long payment) {
-        // Ska öka baserat på hur mkt kund betalar vid ett köp, och deras nivå.
-        // Konvertering från long till int, vad händer vid enormt köp?
         double bonusFactor;
-        switch (this.getLevel()) {
+        switch (this.level) {
             case "Bronze" -> bonusFactor = 0.25;
             case "Silver" -> bonusFactor = 0.50;
             case "Gold" -> bonusFactor = 0.75;
             default -> bonusFactor = 0;
         }
 
-        double rawPoints = (double) (payment * bonusFactor) * 0.1 * 0.1;
-        this.points += (int) Math.round(rawPoints);
+        this.points += (long) Math.round(payment * bonusFactor);
     }
 
     public void changeLevel() {
+        // Handlar man för >= 1000_00 går man från Bronze till Silver
+        // Handlar man för >= 2000_00 går man Från Silver till Gold
+        // Efter 1 mån resettas man till Bronze?
+
 
     }
 }
