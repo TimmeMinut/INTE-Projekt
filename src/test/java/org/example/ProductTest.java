@@ -12,7 +12,7 @@ public class ProductTest {
         Product product = new Product("journal", 25_00, Product.ProductCategory.BOOK, true);
 
         // when && then
-        assertEquals(25_00 * 1.06, product.getVATValue());
+        assertEquals(25_00 * 0.06, product.getVATValue()); //
     }
 
     @Test
@@ -21,7 +21,7 @@ public class ProductTest {
         Product product = new Product("Twix", 12_00, Product.ProductCategory.FOOD, true);
 
         // when && then
-        assertEquals(12_00 * 1.12, product.getVATValue());
+        assertEquals(12_00 * 0.12, product.getVATValue());
     }
 
     @Test
@@ -30,21 +30,21 @@ public class ProductTest {
         Product product = new Product("pen", 17_00, Product.ProductCategory.STANDARD, true);
 
         // when && then
-        assertEquals(17_00 * 1.25, product.getVATValue());
+        assertEquals(17_00 * 0.25, product.getVATValue());
     }
 
     @Test
     void calculatePriceIncludingDeposit() {
         Product product = new Product("Coke", 12_00, Product.ProductCategory.FOOD, true);
 
-        assertEquals(12_00 * 1.12 + 2_00, product.getPrice());
+        assertEquals(12_00 * 1.12 + 2_00, product.getPrice(), 0.000001);
     }
 
     @Test
     void calculatePriceExcludingDeposit() {
         Product product = new Product("Twix", 12_00, Product.ProductCategory.FOOD, false);
 
-        assertEquals(12_00 * 1.12, product.getPrice());
+        assertEquals(12_00 * 1.12, product.getPrice(), 0.000001);
     }
 
     @Test
