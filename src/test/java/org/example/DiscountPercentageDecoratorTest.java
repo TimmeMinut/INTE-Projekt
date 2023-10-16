@@ -37,6 +37,4 @@ class DiscountPercentageDecoratorTest {
         // then
         assertEquals(60, decorator.getDiscountAmount());
     }
-
-
 }

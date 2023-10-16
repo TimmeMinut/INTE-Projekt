@@ -26,4 +26,8 @@ public class ArticleGroup implements Article {
         }
         return totalDiscountAmount;
     }
+
+    public int getQuantity() {
+        return articles.size();
+    }
 }
