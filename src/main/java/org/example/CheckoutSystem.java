@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CheckoutSystem {
-    private Customer customer;
+    private final Customer customer;
     private final Map<Product, Integer> basket = new HashMap<>();
-    private ArrayList<String> discountCodes = new ArrayList<>();
+    private final ArrayList<String> discountCodes = new ArrayList<>();
 
     public CheckoutSystem(Customer currentCustomer) {
         this.customer = currentCustomer;
@@ -61,7 +61,6 @@ public class CheckoutSystem {
 
         // kolla kundens berättigade rabatt
         // kolla membership och rabatter
-
         long totalSum = 0;
         for (Product product : basket.keySet()) {
             int quantity = basket.get(product);
@@ -78,14 +77,17 @@ public class CheckoutSystem {
         return (long) (totalSum * (1 - membershipDiscount));
     }
 
-    private long getQuantityDiscount(Product product) {
+    private double getQuantityDiscount(Product product) {
             if(product.getQuantityDiscount() != null){
                 int toBeBought = basket.get(product);
-                int amountToReachDiscount = (int) product.getQuantityDiscount().getLeft();
+
+                int amountToReachDiscount = product.getQuantityDiscount().getKey();
+
+                //int amountToReachDiscount = (int) product.getQuantityDiscount().getLeft();
 
                 if(toBeBought >= amountToReachDiscount){
                     int totalPayFor = 0;
-                    int payFor = (int) product.getQuantityDiscount().getRight();
+                    int payFor = (int) product.getQuantityDiscount().getValue();
                     int temp = toBeBought;
 
                     while(temp >= amountToReachDiscount){
@@ -93,11 +95,11 @@ public class CheckoutSystem {
                         temp =-amountToReachDiscount;
                     }
 
-                    return ((long) totalPayFor * product.getPrice());
+                    return totalPayFor * product.getPrice();
                 }
 
             }
-        return (long)0;
+        return 0;
     }
 
     private double getMembershipDiscount() { // ev. decorator senare?

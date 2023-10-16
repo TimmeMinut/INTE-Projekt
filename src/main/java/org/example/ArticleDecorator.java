@@ -1,7 +1,7 @@
 package org.example;
 
 public abstract class ArticleDecorator implements Article {
-    private Article article;
+    private final Article article;
 
     public ArticleDecorator(Article article) {
         this.article = article;

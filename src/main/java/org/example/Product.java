@@ -1,23 +1,20 @@
 package org.example;
-import org.apache.commons.lang3.tuple.Pair;
+//import org.apache.commons.lang3.tuple.Pair;
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Product {
     private String name;
-    private long VATExclusive; //price excluding VAT
+    private double VATExclusive; //price excluding VAT
     private ProductCategory productCategory;
     private boolean deposit;
-    private long VATValue;
-    private long price;
-    private Pair<Integer,Integer> quantityDiscount;
+    private double VATValue;
+    private double price;
+    //private Pair<Integer,Integer> quantityDiscount;
+    private Map.Entry<Integer, Integer> quantityDiscount;
 
-
-
-
-
-
-    public Product(String name, long VATExclusive, ProductCategory productCategory, boolean deposit) {
+    public Product(String name, double VATExclusive, ProductCategory productCategory, boolean deposit) {
         this.name = name;
         this.VATExclusive = VATExclusive;
         this.deposit = deposit;
@@ -36,30 +33,39 @@ public class Product {
     }
 
     private void calculateVATValue() {
-        VATValue = (long) (VATExclusive * productCategory.VATRate);
+        VATValue = VATExclusive * productCategory.VATRate;
     }
 
     public String getName() {
         return name;
     }
 
-    public long getVATExclusive(){
+    public double getVATExclusive(){
         return VATExclusive;
     }
 
-    public long getVATValue() {
+    public double getVATValue() {
         return VATValue;
     }
 
-    public Pair<Integer,Integer> getQuantityDiscount() { // Ev. refaktorering senare
+    //public Pair<Integer,Integer> getQuantityDiscount() { // Ev. refaktorering senare
+    //    return quantityDiscount;
+    //}
+
+    public Map.Entry<Integer,Integer> getQuantityDiscount() { // Ev. refaktorering senare
         return quantityDiscount;
     }
 
+    //public void putUpForSale(int take, int pay) {
+    //    quantityDiscount = Pair.of(take, pay);
+    //}
+
     public void putUpForSale(int take, int pay) {
-        quantityDiscount = Pair.of(take, pay);
+        quantityDiscount = new AbstractMap.SimpleEntry<>(take, pay);
+
     }
 
-    public long getPrice() {
+    public double getPrice() {
         return price;
     }
 

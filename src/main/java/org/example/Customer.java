@@ -2,11 +2,11 @@ package org.example;
 
 public class Customer {
 
-    private String name;
-    private String SSN;
+    private final String name;
+    private final String SSN;
     private Membership membership; // Finns det nått lämpligt design-pattern?
-    private long bankAccountBalance;
-    private long walletBalance;
+    private final long bankAccountBalance;
+    private final long walletBalance;
 
     public Customer(String name, String SSN, long bankAccountBalance, long walletBalance) {
         this.name = name;

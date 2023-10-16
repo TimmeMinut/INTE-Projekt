@@ -2,7 +2,7 @@ package org.example;
 
 public class ConcreteArticle implements Article {
     private String name;
-    private double price;
+    private final double price;
 
     public ConcreteArticle(double price) {
         this.price = price;
