@@ -1,5 +1,5 @@
 package org.example;
-
+import org.apache.commons.lang3.tuple.Pair;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +10,7 @@ public class Product {
     private boolean deposit;
     private long VATValue;
     private long price;
-    private Map<Integer,Integer> quantityDiscount = new HashMap<Integer,Integer>();
+    private Pair<Integer,Integer> quantityDiscount;
 
 
 
@@ -51,12 +51,12 @@ public class Product {
         return VATValue;
     }
 
-    public Map<Integer,Integer> getQuantityDiscount() { // Ev. refaktorering senare
+    public Pair<Integer,Integer> getQuantityDiscount() { // Ev. refaktorering senare
         return quantityDiscount;
     }
 
     public void putUpForSale(int take, int pay) {
-        this.quantityDiscount.put(take,pay);
+        quantityDiscount = Pair.of(take, pay);
     }
 
     public long getPrice() {

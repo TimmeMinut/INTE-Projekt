@@ -25,6 +25,7 @@ class CheckoutSystemTest {
         assertEquals(product, checkoutSystem.getProduct("productName"));
     }
 
+
     @Test
     void Existing_product_is_removed_from_basket() {
         // given
@@ -58,7 +59,38 @@ class CheckoutSystemTest {
         checkoutSystem.registerProduct(product);
 
         // then
-        assertEquals(29_00, checkoutSystem.getTotal());
+        assertEquals(29_00 * 1.25, checkoutSystem.getTotal());
+    }
+
+    @Test
+    void Display_checkout_sum_with_amount_reaching_product_discount() {
+        // given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
+        Product product = new Product("productName", 29_00, Product.ProductCategory.STANDARD, false);
+        product.putUpForSale(3,2);
+        // when
+        checkoutSystem.registerProduct(product);
+        checkoutSystem.registerProduct(product);
+        checkoutSystem.registerProduct(product);
+
+        // then
+        assertEquals((29_00 * 1.25) * 2, checkoutSystem.getTotal());
+    }
+
+    @Test
+    void Display_checkout_sum_with_amount_not_reaching_product_discount() {
+        // given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
+        Product product = new Product("productName", 29_00, Product.ProductCategory.STANDARD, false);
+        product.putUpForSale(5,4);
+        // when
+        checkoutSystem.registerProduct(product);
+        checkoutSystem.registerProduct(product);
+        checkoutSystem.registerProduct(product);
+        checkoutSystem.registerProduct(product);
+
+        // then
+        assertEquals((29_00 * 1.25) * 4, checkoutSystem.getTotal());
     }
 
     @Test
