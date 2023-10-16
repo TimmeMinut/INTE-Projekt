@@ -79,10 +79,25 @@ public class CheckoutSystem {
     }
 
     private long getQuantityDiscount(Product product) {
-            int take = basket.get(product); // Quantity
-            int pay = product.getQuantityDiscount().get(take); // vad händer här om Quant.Disc ej finns?
+            if(product.getQuantityDiscount() != null){
+                int toBeBought = basket.get(product);
+                int amountToReachDiscount = (int) product.getQuantityDiscount().getLeft();
 
-            return (take - pay) * product.getPrice();
+                if(toBeBought >= amountToReachDiscount){
+                    int totalPayFor = 0;
+                    int payFor = (int) product.getQuantityDiscount().getRight();
+                    int temp = toBeBought;
+
+                    while(temp >= amountToReachDiscount){
+                        totalPayFor += temp -payFor;
+                        temp =-amountToReachDiscount;
+                    }
+
+                    return ((long) totalPayFor * product.getPrice());
+                }
+
+            }
+        return (long)0;
     }
 
     private double getMembershipDiscount() { // ev. decorator senare?
