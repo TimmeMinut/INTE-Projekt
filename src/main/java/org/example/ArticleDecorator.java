@@ -11,9 +11,4 @@ public abstract class ArticleDecorator implements Article {
     public double getPrice() {
         return article.getPrice();
     }
-
-    @Override
-    public String getName() {
-        return article.getName();
-    }
 }

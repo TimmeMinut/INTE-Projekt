@@ -4,7 +4,7 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Product {
+public class Product implements Article {
     private String name;
     private double VATExclusive; //price excluding VAT
     private ProductCategory productCategory;

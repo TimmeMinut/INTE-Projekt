@@ -24,13 +24,13 @@ public class CheckoutSystem {
 
 
     public Product getProduct(String productName) {
-        Product p = null;
-        for (Product product : basket.keySet()) {
-            if (productName.equals(product.getName())) {
-                p = product;
+        Product product = null;
+        for (Product p : basket.keySet()) {
+            if (productName.equals(p.getName())) {
+                product = p;
             }
         }
-        return p;
+        return product;
     }
 
     public void removeProduct(String productName) {
@@ -52,7 +52,7 @@ public class CheckoutSystem {
         return basket.containsKey(product);
     }
 
-    public long getTotal() {
+    public double getTotal() {
         // TODO Here will all logic be
         // Produktkategorirabatter
         // Produktrabatter
@@ -61,7 +61,7 @@ public class CheckoutSystem {
 
         // kolla kundens berättigade rabatt
         // kolla membership och rabatter
-        long totalSum = 0;
+        double totalSum = 0;
         for (Product product : basket.keySet()) {
             int quantity = basket.get(product);
             double quantityDiscount = getQuantityDiscount(product);
@@ -74,7 +74,7 @@ public class CheckoutSystem {
             membershipDiscount = getMembershipDiscount();
         }
 
-        return (long) (totalSum * (1 - membershipDiscount));
+        return (totalSum * (1 - membershipDiscount));
     }
 
     private double getQuantityDiscount(Product product) {
@@ -116,8 +116,8 @@ public class CheckoutSystem {
     }
 
     public void pay(Card card) {
-        long total = getTotal();
-        long balance = card.getBalance();
+        double total = getTotal();
+        double balance = card.getBalance();
 
         if (total > balance) {
             // TODO How to handle this?

@@ -17,9 +17,4 @@ public class ArticleGroup implements Article {
         }
         return totalPrice;
     }
-
-    @Override
-    public String getName() {
-        return null;
-    }
 }

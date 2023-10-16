@@ -64,7 +64,7 @@ public class MembershipTest {
         CheckoutSystem checkoutSystem = VALID_CHECKOUT_SYSTEM;
         Product coffee = new Product("Coffee", 100_00, Product.ProductCategory.STANDARD, false);
         checkoutSystem.registerProduct(coffee);
-        long payment = checkoutSystem.getTotal();
+        double payment = checkoutSystem.getTotal();
 
         // When
         membership.increasePoints(payment);
