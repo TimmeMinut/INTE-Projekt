@@ -64,7 +64,7 @@ public class CheckoutSystem {
         long totalSum = 0;
         for (Product product : basket.keySet()) {
             int quantity = basket.get(product);
-            long quantityDiscount = getQuantityDiscount(product);
+            double quantityDiscount = getQuantityDiscount(product);
 
             totalSum += (product.getPrice() * quantity) - quantityDiscount;
         }
