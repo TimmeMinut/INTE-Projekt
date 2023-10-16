@@ -7,8 +7,7 @@ public class Money {
 
     public Money(long amount) {
         if (amount < 0)
-            throw new IllegalArgumentException(
-                    "amount can't be less than zero");
+            throw new IllegalArgumentException("amount can't be less than zero");
         this.amount = amount;
     }
 
