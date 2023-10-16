@@ -76,16 +76,28 @@ public class CheckoutSystem {
         }
 
         return (long) (totalSum * (1 - membershipDiscount));
-        return totalSum;
     }
 
     private long getQuantityDiscount(Product product) {
-        if (product.getQuantityDiscount().isEmpty()) return 0;
+            if(product.getQuantityDiscount() != null){
+                int toBeBought = basket.get(product);
+                int amountToReachDiscount = (int) product.getQuantityDiscount().getLeft();
 
-        int take = basket.get(product); // Quantity
-        int pay = product.getQuantityDiscount().get(take);
+                if(toBeBought >= amountToReachDiscount){
+                    int totalPayFor = 0;
+                    int payFor = (int) product.getQuantityDiscount().getRight();
+                    int temp = toBeBought;
 
-        return (take - pay) * product.getPrice();
+                    while(temp >= amountToReachDiscount){
+                        totalPayFor += temp -payFor;
+                        temp =-amountToReachDiscount;
+                    }
+
+                    return ((long) totalPayFor * product.getPrice());
+                }
+
+            }
+        return (long)0;
     }
 
     private double getMembershipDiscount() { // ev. decorator senare?
