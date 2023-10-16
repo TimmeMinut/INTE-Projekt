@@ -40,16 +40,7 @@ public class Membership {
     }
 
     public void increasePoints(long payment) {
-//        double bonusFactor;
-//        switch (level) {
-//            case "Bronze" -> bonusFactor = 1.25;
-//            case "Silver" -> bonusFactor = 1.50;
-//            case "Gold" -> bonusFactor = 1.75;
-//            default -> bonusFactor = 1;
-//        }
 
-//        long pointsToAdd = (long) (payment * bonusFactor);
-//        points += pointsToAdd;
 
         points += payment;
         updateLevel(payment);

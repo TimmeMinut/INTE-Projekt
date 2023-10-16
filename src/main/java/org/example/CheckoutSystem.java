@@ -70,12 +70,12 @@ public class CheckoutSystem {
             totalSum += (product.getPrice() * quantity) - quantityDiscount;
         }
 
-//        double membershipDiscount = 0;
-//        if (customer.getMembership() != null) {
-//            membershipDiscount = getMembershipDiscount();
-//        }
+        double membershipDiscount = 0;
+        if (customer.getMembership() != null) {
+            membershipDiscount = getMembershipDiscount();
+        }
 
-//        return (long) (totalSum * (1 - membershipDiscount));
+        return (long) (totalSum * (1 - membershipDiscount));
         return totalSum;
     }
 
