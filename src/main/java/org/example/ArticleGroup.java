@@ -17,4 +17,13 @@ public class ArticleGroup implements Article {
         }
         return totalPrice;
     }
+
+    @Override
+    public double getDiscountAmount() {
+        double totalDiscountAmount = 0;
+        for (Article article: articles) {
+            totalDiscountAmount += article.getDiscountAmount();
+        }
+        return totalDiscountAmount;
+    }
 }

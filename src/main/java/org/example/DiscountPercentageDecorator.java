@@ -16,4 +16,8 @@ public class DiscountPercentageDecorator extends ArticleDecorator implements Art
         return super.getPrice() * ( 1 - discount);
     }
 
+    @Override
+    public double getDiscountAmount() {
+        return super.getPrice() * discount;
+    }
 }

@@ -15,4 +15,6 @@ public class ConcreteArticle implements Article {
     public double getPrice() {
         return price;
     }
+
+    public double getDiscountAmount() { return 0; }
 }

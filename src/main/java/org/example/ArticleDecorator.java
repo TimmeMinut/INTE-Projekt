@@ -11,4 +11,9 @@ public abstract class ArticleDecorator implements Article {
     public double getPrice() {
         return article.getPrice();
     }
+
+    @Override
+    public double getDiscountAmount() {
+        return article.getPrice();
+    }
 }
