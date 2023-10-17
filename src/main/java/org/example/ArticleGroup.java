@@ -30,4 +30,9 @@ public class ArticleGroup implements Article {
     public int getQuantity() {
         return articles.size();
     }
+
+    public ArrayList<Article> getArticles() {
+        ArrayList<Article> copy = new ArrayList<>(articles);
+        return copy;
+    }
 }

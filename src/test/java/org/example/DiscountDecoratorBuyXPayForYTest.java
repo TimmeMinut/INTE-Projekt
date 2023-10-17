@@ -59,4 +59,22 @@ public class DiscountDecoratorBuyXPayForYTest {
         // then
         assertEquals(800, discountedGroup.getPrice());
     }
+
+    @Test
+    void Buy_three_pay_for_two_different_prices() {
+        // given
+        Article article1 = new ConcreteArticle(50);
+        Article article2 = new ConcreteArticle(75);
+        Article article3 = new ConcreteArticle(100);
+        ArticleGroup articleGroup = new ArticleGroup();
+        articleGroup.addArticle(article1);
+        articleGroup.addArticle(article2);
+        articleGroup.addArticle(article3);
+
+        // when
+        Article discountedGroup = new DiscountDecoratorBuyXPayForY(articleGroup, 3, 2);
+
+        // then
+        assertEquals(175, discountedGroup.getPrice());
+    }
 }
