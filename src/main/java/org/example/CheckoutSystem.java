@@ -1,16 +1,20 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CheckoutSystem {
     private final Customer customer;
     private final Map<Product, Integer> basket = new HashMap<>();
+    private final ArrayList<ConcreteArticle> articles = new ArrayList<>();
+    private ArrayList<DiscountCampaign> discountCampaigns = new ArrayList<>();
     private final ArrayList<String> discountCodes = new ArrayList<>();
 
     public CheckoutSystem(Customer currentCustomer) {
         this.customer = currentCustomer;
+        discountCampaigns.add( new DiscountCampaign(ProductCategory.BOOK, 3, 2));
     }
 
     public void registerProduct(Product product) {
@@ -53,28 +57,28 @@ public class CheckoutSystem {
     }
 
     public double getTotal() {
-        // TODO Here will all logic be
-        // Produktkategorirabatter
-        // Produktrabatter
-        // Åldersgräns, kundens ålder vs produkt
-        // Rabatt giltighetstid?
+        // Which campaign is worth more?
+        double totalDiscountFromCampaigns = getDiscountFromCampaigns(); // Apply discountCompaigns, get discountAmount
+        double totalDiscountFromMembership = getBasketValue() * ( 1 - getMembershipDiscount());
 
-        // kolla kundens berättigade rabatt
-        // kolla membership och rabatter
-        double totalSum = 0;
-        for (Product product : basket.keySet()) {
-            int quantity = basket.get(product);
-            double quantityDiscount = getQuantityDiscount(product);
-
-            totalSum += (product.getPrice() * quantity) - quantityDiscount;
+        // Biggest discount is applied
+        if (totalDiscountFromCampaigns > totalDiscountFromMembership) {
+            applyDiscountFromCampaigns();
+        } else {
+            applyMembershipCampaign();
         }
 
-        double membershipDiscount = 0;
-        if (customer.getMembership() != null) {
-            membershipDiscount = getMembershipDiscount();
-        }
+        applyVAT();
 
-        return (totalSum * (1 - membershipDiscount));
+        return total;
+    }
+
+    public double getBasketValue() {
+        double totalValue = 0;
+        for(ConcreteArticle article: articles) {
+            totalValue += article.getPrice();
+        }
+        return getBasketValue();
     }
 
     private double getQuantityDiscount(Product product) {
@@ -126,19 +130,109 @@ public class CheckoutSystem {
         card.debit(total);
     }
 
-    public void registerDiscountCode(String code) {
-        discountCodes.add(code);
+    private double getDiscountFromCampaigns() {
+        double appliedDiscountAmount = 0;
+        // för varje kampanj, applicera rabatter
+        for ( DiscountCampaign campaign: discountCampaigns) {
+            appliedDiscountAmount += getDiscountFromCampaign(campaign);
+        }
+        return appliedDiscountAmount;
     }
 
-    /*private double percentageDiscount() {
-        ArticleGroup articleGroup = new ArticleGroup();
-        for (Article article: basket) {
-            articleGroup.addArticle(article);
+    private double getDiscountFromCampaign(DiscountCampaign discountCampaign) {
+        double appliedDiscountAmount = 0;
+
+        ProductCategory productCategory = discountCampaign.getProductCategory();
+        int buy = discountCampaign.getBuy();
+        int payFor = discountCampaign.getBuy();
+
+        ArrayList<ConcreteArticle> discountedItems = new ArrayList<>();
+        for (ConcreteArticle article: articles) {
+            if (article.getProductCategory().equals(productCategory)) {
+                discountedItems.add(article);
+            }
         }
 
-        Article decorator =  new DiscountPercentageDecorator(articleGroup, 0.25);
-        return decorator.getPrice();
-    }*/
+        if(discountedItems.isEmpty()) {
+            // TODO Felhantering?
+        };
+
+        ArrayList<ConcreteArticle> sortedItems = getArticlesSorted(discountedItems);
+
+        int totalQuantity = articles.size(); // TODO Throw away since articleGroup.getArticles()?
+        int notDiscountedQuantity = totalQuantity / buy * payFor;
+        int restQuantity = totalQuantity % buy;
+
+        // sätta rabatt på notdiscountedQuantity: de sista i listan
+        for ( int i = sortedItems.size()-1; i >= notDiscountedQuantity; i--) {
+            ConcreteArticle article = sortedItems.get(i);
+            appliedDiscountAmount += article.getPrice();
+            article.setDiscountAmount(article.getPrice());
+        }
+
+        //double originalPrice = super.getPrice() / totalQuantity;
+        //return originalPrice * ( notDiscountedQuantity + restQuantity );
+        return appliedDiscountAmount;
+    }
+
+    private void ApplyDiscountFromCampaigns() {
+        // för varje kampanj, applicera rabatter
+        for ( DiscountCampaign campaign: discountCampaigns) {
+            appliedDiscountAmount += ApplyDiscountFromCampaigns(campaign);
+        }
+        return appliedDiscountAmount;
+    }
 
 
+
+    public void applyDiscountFromCampaigns(DiscountCampaign discountCampaign) {
+        double appliedDiscountAmount = 0;
+
+        ProductCategory productCategory = discountCampaign.getProductCategory();
+        int buy = discountCampaign.getBuy();
+        int payFor = discountCampaign.getBuy();
+
+        ArrayList<ConcreteArticle> discountedItems = new ArrayList<>();
+        for (ConcreteArticle article: articles) {
+            if (article.getProductCategory().equals(productCategory)) {
+                discountedItems.add(article);
+            }
+        }
+
+        if(discountedItems.isEmpty()) {
+            // TODO Felhantering?
+        };
+
+        ArrayList<ConcreteArticle> sortedItems = getArticlesSorted(discountedItems);
+
+        int totalQuantity = articles.size(); // TODO Throw away since articleGroup.getArticles()?
+        int notDiscountedQuantity = totalQuantity / buy * payFor;
+        int restQuantity = totalQuantity % buy;
+
+        // sätta rabatt på notdiscountedQuantity: de sista i listan
+        for ( int i = sortedItems.size()-1; i >= notDiscountedQuantity; i--) {
+            ConcreteArticle article = sortedItems.get(i);
+            appliedDiscountAmount += article.getPrice();
+            article.setDiscountAmount(article.getPrice());
+        }
+
+        //double originalPrice = super.getPrice() / totalQuantity;
+        //return originalPrice * ( notDiscountedQuantity + restQuantity );
+        return appliedDiscountAmount;
+    }
+
+    private ArrayList<ConcreteArticle> getArticlesSorted(ArrayList<ConcreteArticle> list) {
+
+        Collections.sort(list, (article1, article2) -> {
+            double price1 = article1.getPrice();
+            double price2 = article2.getPrice();
+
+            return Double.compare(price1, price2);
+        });
+        return articles;
+    }
+
+    //public void registerDiscountCode(String code) {
+    //    discountCodes.add(code);
+    //}
 }

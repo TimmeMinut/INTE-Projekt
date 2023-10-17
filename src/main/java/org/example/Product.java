@@ -27,7 +27,7 @@ public class Product {
         calculateVATValue();
         price = VATExclusive + VATValue;
 
-        if(deposit){
+        if (deposit) {
             price += 2_00;
         }
     }
@@ -40,7 +40,7 @@ public class Product {
         return name;
     }
 
-    public double getVATExclusive(){
+    public double getVATExclusive() {
         return VATExclusive;
     }
 
@@ -52,7 +52,7 @@ public class Product {
     //    return quantityDiscount;
     //}
 
-    public Map.Entry<Integer,Integer> getQuantityDiscount() { // Ev. refaktorering senare
+    public Map.Entry<Integer, Integer> getQuantityDiscount() { // Ev. refaktorering senare
         return quantityDiscount;
     }
 
@@ -69,20 +69,4 @@ public class Product {
         return price;
     }
 
-
-    public enum ProductCategory {
-        BOOK(0.06),
-        FOOD(0.12),
-        STANDARD(0.25);
-
-        private final double VATRate;
-
-        ProductCategory(double VATRate) {
-            this.VATRate = VATRate;
-        }
-
-        public double getVATRate() {
-            return VATRate;
-        }
-    }
 }
