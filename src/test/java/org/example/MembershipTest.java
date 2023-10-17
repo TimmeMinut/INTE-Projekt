@@ -23,7 +23,7 @@ public class MembershipTest {
         customer.becomeMember();
 
         // then
-        assertEquals("20001231-1234", customer.getMembership().getCustomer().getSSN()); // ... hmm
+        assertEquals("20001231-1234", customer.getMembership().getCustomer().getSSN());
     }
 
 
@@ -80,7 +80,7 @@ public class MembershipTest {
         customer.becomeMember();
         Membership membership = customer.getMembership();
         CheckoutSystem checkoutSystem = VALID_CHECKOUT_SYSTEM;
-        Product expensiveProduct = new Product("Gold", 1000_00, Product.ProductCategory.STANDARD, false);
+        Product expensiveProduct = new Product("Saffron", 1000_00, Product.ProductCategory.STANDARD, false);
         checkoutSystem.registerProduct(expensiveProduct);
 
         // When

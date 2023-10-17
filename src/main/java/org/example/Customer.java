@@ -4,7 +4,7 @@ public class Customer {
 
     private String name;
     private String SSN;
-    private Membership membership; // Finns det nått lämpligt design-pattern?
+    private Membership membership;
     private long bankAccountBalance;
     private long walletBalance;
 
@@ -33,6 +33,9 @@ public class Customer {
 
     public Membership getMembership() {
         return membership;
+    }
+    public void pay(double total) {
+        bankAccountBalance -= (long)(total * 100);
     }
 
     public void becomeMember() {

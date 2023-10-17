@@ -79,28 +79,28 @@ public class CheckoutSystem {
     }
 
     private double getQuantityDiscount(Product product) {
-            if(product.getQuantityDiscount() != null){
-                int toBeBought = basket.get(product);
-                int amountToReachDiscount = (int) product.getQuantityDiscount().getLeft();
+        if (product.getQuantityDiscount() != null) {
+            int toBeBought = basket.get(product);
+            int amountToReachDiscount = (int) product.getQuantityDiscount().getLeft();
 
-                if(toBeBought >= amountToReachDiscount){
-                    int totalPayFor = 0;
-                    int payFor = (int) product.getQuantityDiscount().getRight();
-                    int temp = toBeBought;
+            if (toBeBought >= amountToReachDiscount) {
+                int totalPayFor = 0;
+                int payFor = (int) product.getQuantityDiscount().getRight();
+                int temp = toBeBought;
 
-                    while(temp >= amountToReachDiscount){
-                        totalPayFor += temp -payFor;
-                        temp =-amountToReachDiscount;
-                    }
-
-                    return ( totalPayFor * product.getPrice());
+                while (temp >= amountToReachDiscount) {
+                    totalPayFor += temp - payFor;
+                    temp = -amountToReachDiscount;
                 }
 
+                return (totalPayFor * product.getPrice());
             }
+
+        }
         return 0;
     }
 
-    private double getMembershipDiscount() { // ev. decorator senare?
+    private double getMembershipDiscount() {
         switch (customer.getMembership().getLevel()) {
             case "Bronze":
                 return 0.01;
@@ -113,16 +113,14 @@ public class CheckoutSystem {
         }
     }
 
-    public void pay(Card card) {
-        long total = (long)getTotal();
-        long balance = card.getBalance();
+    public void checkout() {
+        double total = getTotal();
+        if (customer.getBankAccountBalance() < (long) total)
+            throw new IllegalStateException("Payment declined: Insufficient funds.");
 
-        if (total > balance) {
-            // TODO How to handle this?
-        }
-
-        card.debit(total);
+        customer.pay(total);
     }
+
 
     public void registerDiscountCode(String code) {
         discountCodes.add(code);

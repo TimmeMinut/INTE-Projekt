@@ -1,7 +1,6 @@
 package org.example;
 import org.apache.commons.lang3.tuple.Pair;
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class Product {
     private String name;

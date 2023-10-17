@@ -3,15 +3,16 @@ package org.example;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.StandardWatchEventKinds;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// TODO Make compatible with latest updates
 class CheckoutSystemTest {
     public static final Customer VALID_CUSTOMER = new Customer("customerName", "20001231-1234", 15000_00, 500_00);
 
     public static final Product VALID_PRODUCT = new Product("productName", 20_00, Product.ProductCategory.STANDARD, false);
+
     @Test
     void Product_is_added_to_basket() {
         // given
@@ -103,19 +104,31 @@ class CheckoutSystemTest {
     }
 
     @Test
-    void Card_payment_with_enough_money() {
-        // given
-        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
-        Product product = VALID_PRODUCT;
-        checkoutSystem.registerProduct(VALID_PRODUCT);
-        Card card = new Card(100_00);
+    void Purchase_deducts_total_from_customer() {
+        // Given
+        Customer customer = new Customer("Albert", "19991231-1234", 100_00, 50_00);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
+        Product product = new Product("Chair", 10, Product.ProductCategory.STANDARD, false);
+        checkoutSystem.registerProduct(product);
 
-        // when
-        checkoutSystem.pay(card);
+        // When
+        checkoutSystem.checkout();
 
-        // then
-        assertEquals(70_01, card.getBalance());
+        // Then
+        assertEquals(100_00 - 12_50, customer.getBankAccountBalance());
     }
+
+    @Test
+    void Purchase_with_insufficient_funds_throws_exception() {
+        // Given
+        Customer customer = new Customer("Broke","20001231-3456", 0, 0);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
+        checkoutSystem.registerProduct(VALID_PRODUCT);
+
+        // Then
+        assertThrows(IllegalStateException.class, checkoutSystem::checkout);
+    }
+
 
     @Test
     void Percentage_discount() { // Testfall ska möjligen ändras eller raderas?
