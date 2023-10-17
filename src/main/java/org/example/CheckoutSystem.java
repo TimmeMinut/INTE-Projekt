@@ -14,7 +14,11 @@ public class CheckoutSystem {
 
     public CheckoutSystem(Customer currentCustomer) {
         this.customer = currentCustomer;
-        discountCampaigns.add( new DiscountCampaign(ProductCategory.BOOK, 3, 2));
+        //discountCampaigns.add( new DiscountCampaign(ProductCategory.BOOK, 3, 2));
+    }
+
+    public void addDiscountCampaign(DiscountCampaign discountCampaign) {
+        discountCampaigns.add(discountCampaign);
     }
 
     public void registerProduct(Product product) {
@@ -24,6 +28,10 @@ public class CheckoutSystem {
             int quantity = basket.get(product);
             basket.put(product, ++quantity); // Skriver över tidigare quantity med +1
         }
+    }
+
+    public void registerProduct(ConcreteArticle article) {
+        articles.add(article);
     }
 
 
@@ -60,7 +68,7 @@ public class CheckoutSystem {
         double total = getBasketValue();
         // Which campaign is worth more?
         double totalDiscountFromCampaigns = getDiscountFromCampaigns(); // Apply discountCompaigns, get discountAmount
-        double totalDiscountFromMembership = getBasketValue() * ( 1 - getMembershipDiscount());
+        double totalDiscountFromMembership = getBasketValue() * getMembershipDiscount();
 
         // Biggest discount is applied
         if (totalDiscountFromCampaigns > totalDiscountFromMembership) {
@@ -71,7 +79,7 @@ public class CheckoutSystem {
             total -= totalDiscountFromMembership;
         }
 
-        total -= getTotalVAT();
+        total += getTotalVAT();
 
         return total;
     }
@@ -79,7 +87,7 @@ public class CheckoutSystem {
     public double getTotalVAT() {
         double totalVAT = 0;
         for (ConcreteArticle article: articles) {
-            totalVAT += article.getDiscountAmount() * article.getProductCategory().getVATRate();
+            totalVAT += article.getPriceAfterDiscounts() * article.getProductCategory().getVATRate();
         }
         return totalVAT;
     }
@@ -89,7 +97,7 @@ public class CheckoutSystem {
         for(ConcreteArticle article: articles) {
             totalValue += article.getPrice();
         }
-        return getBasketValue();
+        return totalValue;
     }
 
     private double getQuantityDiscount(Product product) {
@@ -155,7 +163,7 @@ public class CheckoutSystem {
 
         ProductCategory productCategory = discountCampaign.getProductCategory();
         int buy = discountCampaign.getBuy();
-        int payFor = discountCampaign.getBuy();
+        int payFor = discountCampaign.getPayFor();
 
         ArrayList<ConcreteArticle> discountedItems = new ArrayList<>();
         for (ConcreteArticle article: articles) {
@@ -170,15 +178,15 @@ public class CheckoutSystem {
 
         ArrayList<ConcreteArticle> sortedItems = getArticlesSorted(discountedItems);
 
-        int totalQuantity = articles.size(); // TODO Throw away since articleGroup.getArticles()?
-        int notDiscountedQuantity = totalQuantity / buy * payFor;
-        int restQuantity = totalQuantity % buy;
+        int totalQuantity = sortedItems.size(); // TODO Throw away since articleGroup.getArticles()?
+        int discountedQuantity = totalQuantity / buy * ( buy - payFor);
+        int notDiscountedQuantity = totalQuantity - discountedQuantity;
 
         // sätta rabatt på notdiscountedQuantity: de sista i listan
         for ( int i = sortedItems.size()-1; i >= notDiscountedQuantity; i--) {
             ConcreteArticle article = sortedItems.get(i);
             appliedDiscountAmount += article.getPrice();
-            article.setDiscountAmount(article.getPrice());
+            //article.setDiscountAmount(article.getPrice());
         }
 
         //double originalPrice = super.getPrice() / totalQuantity;
@@ -195,7 +203,7 @@ public class CheckoutSystem {
     public void applyDiscountFromCampaigns(DiscountCampaign discountCampaign) {
         ProductCategory productCategory = discountCampaign.getProductCategory();
         int buy = discountCampaign.getBuy();
-        int payFor = discountCampaign.getBuy();
+        int payFor = discountCampaign.getPayFor();
 
         ArrayList<ConcreteArticle> discountedItems = new ArrayList<>();
         for (ConcreteArticle article: articles) {
@@ -211,8 +219,8 @@ public class CheckoutSystem {
         ArrayList<ConcreteArticle> sortedItems = getArticlesSorted(discountedItems);
 
         int totalQuantity = articles.size(); // TODO Throw away since articleGroup.getArticles()?
-        int notDiscountedQuantity = totalQuantity / buy * payFor;
-        int restQuantity = totalQuantity % buy;
+        int discountedQuantity = totalQuantity / buy * ( buy - payFor);
+        int notDiscountedQuantity = totalQuantity - discountedQuantity;
 
         // sätta rabatt på notdiscountedQuantity: de sista i listan
         for ( int i = sortedItems.size()-1; i >= notDiscountedQuantity; i--) {
