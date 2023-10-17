@@ -11,7 +11,7 @@ public class MembershipTest {
     public static final Customer VALID_CUSTOMER = new Customer("Bob", "20001231-1234", 15000_00, 500_00);
     public static final LocalDateTime VALID_DATE_TIME = LocalDateTime.of(2023, 1, 31, 15, 30);
     public static final CheckoutSystem VALID_CHECKOUT_SYSTEM = new CheckoutSystem(VALID_CUSTOMER);
-    public static final Product VALID_PRODUCT = new Product("productName", 20_00, Product.ProductCategory.STANDARD, false);
+    public static final Product VALID_PRODUCT = new Product("productName", 20_00, ProductCategory.STANDARD, false);
 
 
     @Test
@@ -62,7 +62,7 @@ public class MembershipTest {
         customer.becomeMember();
         Membership membership = customer.getMembership();
         CheckoutSystem checkoutSystem = VALID_CHECKOUT_SYSTEM;
-        Product coffee = new Product("Coffee", 100_00, Product.ProductCategory.STANDARD, false);
+        Product coffee = new Product("Coffee", 100_00, ProductCategory.STANDARD, false);
         checkoutSystem.registerProduct(coffee);
         double payment = checkoutSystem.getTotal();
 
@@ -80,7 +80,7 @@ public class MembershipTest {
         customer.becomeMember();
         Membership membership = customer.getMembership();
         CheckoutSystem checkoutSystem = VALID_CHECKOUT_SYSTEM;
-        Product expensiveProduct = new Product("Gold", 1000_00, Product.ProductCategory.STANDARD, false);
+        Product expensiveProduct = new Product("Gold", 1000_00, ProductCategory.STANDARD, false);
         checkoutSystem.registerProduct(expensiveProduct);
 
         // When
