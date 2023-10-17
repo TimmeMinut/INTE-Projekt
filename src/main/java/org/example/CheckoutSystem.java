@@ -52,7 +52,7 @@ public class CheckoutSystem {
         return basket.containsKey(product);
     }
 
-    public long getTotal() {
+    public double getTotal() {
         // TODO Here will all logic be
         // Produktkategorirabatter
         // Produktrabatter
@@ -62,10 +62,10 @@ public class CheckoutSystem {
         // kolla kundens berättigade rabatt
         // kolla membership och rabatter
 
-        long totalSum = 0;
+        double totalSum = 0;
         for (Product product : basket.keySet()) {
             int quantity = basket.get(product);
-            long quantityDiscount = getQuantityDiscount(product);
+            double quantityDiscount = getQuantityDiscount(product);
 
             totalSum += (product.getPrice() * quantity) - quantityDiscount;
         }
@@ -75,10 +75,10 @@ public class CheckoutSystem {
             membershipDiscount = getMembershipDiscount();
         }
 
-        return (long) (totalSum * (1 - membershipDiscount));
+        return (totalSum * (1 - membershipDiscount));
     }
 
-    private long getQuantityDiscount(Product product) {
+    private double getQuantityDiscount(Product product) {
             if(product.getQuantityDiscount() != null){
                 int toBeBought = basket.get(product);
                 int amountToReachDiscount = (int) product.getQuantityDiscount().getLeft();
@@ -93,11 +93,11 @@ public class CheckoutSystem {
                         temp =-amountToReachDiscount;
                     }
 
-                    return ((long) totalPayFor * product.getPrice());
+                    return ( totalPayFor * product.getPrice());
                 }
 
             }
-        return (long)0;
+        return 0;
     }
 
     private double getMembershipDiscount() { // ev. decorator senare?
@@ -114,7 +114,7 @@ public class CheckoutSystem {
     }
 
     public void pay(Card card) {
-        long total = getTotal();
+        long total = (long)getTotal();
         long balance = card.getBalance();
 
         if (total > balance) {

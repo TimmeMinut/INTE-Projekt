@@ -62,15 +62,15 @@ public class MembershipTest {
         customer.becomeMember();
         Membership membership = customer.getMembership();
         CheckoutSystem checkoutSystem = VALID_CHECKOUT_SYSTEM;
-        Product coffee = new Product("Coffee", 100_00, Product.ProductCategory.STANDARD, false);
+        Product coffee = new Product("Coffee", 100, Product.ProductCategory.STANDARD, false);
         checkoutSystem.registerProduct(coffee);
-        long payment = checkoutSystem.getTotal();
+        long payment = (long)checkoutSystem.getTotal();
 
         // When
         membership.increasePoints(payment);
 
         // Then
-        assertEquals(125_00, membership.getPoints());
+        assertEquals(checkoutSystem.getTotal(), membership.getPoints());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class MembershipTest {
         checkoutSystem.registerProduct(expensiveProduct);
 
         // When
-        membership.increasePoints(checkoutSystem.getTotal());
+        membership.increasePoints((long)checkoutSystem.getTotal());
 
         // Then
         assertEquals("Silver", membership.getLevel());

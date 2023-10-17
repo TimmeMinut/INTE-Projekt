@@ -31,7 +31,7 @@ public class Membership {
         return customer;
     }
 
-    public long getPoints() {
+    public double getPoints() {
         return points;
     }
 

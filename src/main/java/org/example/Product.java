@@ -5,11 +5,11 @@ import java.util.Map;
 
 public class Product {
     private String name;
-    private long VATExclusive; //price excluding VAT
+    private double VATExclusive; //price excluding VAT
     private ProductCategory productCategory;
     private boolean deposit;
-    private long VATValue;
-    private long price;
+    private double VATValue;
+    private double price;
     private Pair<Integer,Integer> quantityDiscount;
 
 
@@ -17,7 +17,7 @@ public class Product {
 
 
 
-    public Product(String name, long VATExclusive, ProductCategory productCategory, boolean deposit) {
+    public Product(String name, double VATExclusive, ProductCategory productCategory, boolean deposit) {
         this.name = name;
         this.VATExclusive = VATExclusive;
         this.deposit = deposit;
@@ -31,23 +31,23 @@ public class Product {
         price = VATExclusive + VATValue;
 
         if(deposit){
-            price += 2_00;
+            price += 2;
         }
     }
 
     private void calculateVATValue() {
-        VATValue = (long) (VATExclusive * productCategory.VATRate);
+        VATValue =  VATExclusive * productCategory.VATRate;
     }
 
     public String getName() {
         return name;
     }
 
-    public long getVATExclusive(){
+    public double getVATExclusive(){
         return VATExclusive;
     }
 
-    public long getVATValue() {
+    public double getVATValue() {
         return VATValue;
     }
 
@@ -59,7 +59,7 @@ public class Product {
         quantityDiscount = Pair.of(take, pay);
     }
 
-    public long getPrice() {
+    public double getPrice() {
         return price;
     }
 
