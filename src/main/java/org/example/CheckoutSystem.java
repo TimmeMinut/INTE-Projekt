@@ -57,6 +57,7 @@ public class CheckoutSystem {
     }
 
     public double getTotal() {
+        double total = getBasketValue();
         // Which campaign is worth more?
         double totalDiscountFromCampaigns = getDiscountFromCampaigns(); // Apply discountCompaigns, get discountAmount
         double totalDiscountFromMembership = getBasketValue() * ( 1 - getMembershipDiscount());
@@ -64,13 +65,23 @@ public class CheckoutSystem {
         // Biggest discount is applied
         if (totalDiscountFromCampaigns > totalDiscountFromMembership) {
             applyDiscountFromCampaigns();
+            total -= totalDiscountFromCampaigns;
         } else {
             applyMembershipCampaign();
+            total -= totalDiscountFromMembership;
         }
 
-        applyVAT();
+        total -= getTotalVAT();
 
         return total;
+    }
+
+    public double getTotalVAT() {
+        double totalVAT = 0;
+        for (ConcreteArticle article: articles) {
+            totalVAT += article.getDiscountAmount() * article.getProductCategory().getVATRate();
+        }
+        return totalVAT;
     }
 
     public double getBasketValue() {
@@ -175,19 +186,13 @@ public class CheckoutSystem {
         return appliedDiscountAmount;
     }
 
-    private void ApplyDiscountFromCampaigns() {
-        // för varje kampanj, applicera rabatter
+    private void applyDiscountFromCampaigns() {
         for ( DiscountCampaign campaign: discountCampaigns) {
-            appliedDiscountAmount += ApplyDiscountFromCampaigns(campaign);
+            applyDiscountFromCampaigns(campaign);
         }
-        return appliedDiscountAmount;
     }
 
-
-
     public void applyDiscountFromCampaigns(DiscountCampaign discountCampaign) {
-        double appliedDiscountAmount = 0;
-
         ProductCategory productCategory = discountCampaign.getProductCategory();
         int buy = discountCampaign.getBuy();
         int payFor = discountCampaign.getBuy();
@@ -212,13 +217,19 @@ public class CheckoutSystem {
         // sätta rabatt på notdiscountedQuantity: de sista i listan
         for ( int i = sortedItems.size()-1; i >= notDiscountedQuantity; i--) {
             ConcreteArticle article = sortedItems.get(i);
-            appliedDiscountAmount += article.getPrice();
             article.setDiscountAmount(article.getPrice());
         }
 
         //double originalPrice = super.getPrice() / totalQuantity;
         //return originalPrice * ( notDiscountedQuantity + restQuantity );
-        return appliedDiscountAmount;
+    }
+
+    public void applyMembershipCampaign() {
+        double membershipDiscount = getMembershipDiscount();
+
+        for (ConcreteArticle article: articles) {
+            article.setDiscountAmount(article.getPrice() * membershipDiscount);
+        }
     }
 
     private ArrayList<ConcreteArticle> getArticlesSorted(ArrayList<ConcreteArticle> list) {
