@@ -1,6 +1,8 @@
 package org.example;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Objects;
+
 
 public class Product {
     private String name;
@@ -9,12 +11,8 @@ public class Product {
     private boolean deposit;
     private double VATValue;
     private double price;
+    private double discountAmount = 0;
     private Pair<Integer,Integer> quantityDiscount;
-
-
-
-
-
 
     public Product(String name, double VATExclusive, ProductCategory productCategory, boolean deposit) {
         this.name = name;
@@ -50,6 +48,10 @@ public class Product {
         return VATValue;
     }
 
+    public ProductCategory getProductCategory() {
+        return productCategory;
+    }
+
     public Pair<Integer,Integer> getQuantityDiscount() { // Ev. refactoring senare
         return quantityDiscount;
     }
@@ -62,7 +64,28 @@ public class Product {
         return price;
     }
 
+    public void setDiscountAmount(double discountAmount) { this.discountAmount = discountAmount; }
 
+    public double getPriceAfterDiscounts() { return price - discountAmount; }
+
+    @Override
+    public int hashCode() {
+        // TODO add name
+        return Objects.hash(name);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj instanceof Product object) {
+            return this.getName().equals(object.getName());
+        }
+
+        return false;
+    }
     public enum ProductCategory {
         BOOK(0.06),
         FOOD(0.12),
