@@ -1,22 +1,22 @@
 package org.example;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 
-// TODO Make compatible with latest updates
 class CheckoutSystemTest {
-    public static final Customer VALID_CUSTOMER = new Customer("customerName", "20001231-1234", 15000_00, 500_00);
+    private static final Customer NON_MEMBER_CUSTOMER = new Customer("Bob", "19991231-1234", 15000_00, false);
 
-    public static final Product VALID_PRODUCT = new Product("productName", 20_00, ProductCategory.STANDARD, false);
+    private static final Product VALID_PRODUCT = new Product("productName", 20, Product.ProductCategory.STANDARD, false);
+
     @Test
     void Product_is_added_to_basket() {
         // given
-        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
         Product product = VALID_PRODUCT;
 
         // when
@@ -30,7 +30,7 @@ class CheckoutSystemTest {
     @Test
     void Existing_product_is_removed_from_basket() {
         // given
-        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
         Product product = VALID_PRODUCT;
         checkoutSystem.registerProduct(product);
 
@@ -44,7 +44,7 @@ class CheckoutSystemTest {
     @Test
     void Removing_non_existing_product_from_basket_throws_exception() {
         // given
-        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
 
         // then
         assertThrows(IllegalArgumentException.class, () -> checkoutSystem.removeProduct("productName"));
@@ -53,8 +53,8 @@ class CheckoutSystemTest {
     @Test
     void Display_checkout_sum_with_product_registered() {
         // given
-        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
-        Product product = new Product("productName", 29_00, ProductCategory.STANDARD, false);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        Product product = new Product("productName", 29, Product.ProductCategory.STANDARD, false);
 
         // when
         checkoutSystem.registerProduct(product);
@@ -66,9 +66,9 @@ class CheckoutSystemTest {
     @Test
     void Display_checkout_sum_with_amount_reaching_product_discount() {
         // given
-        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
-        Product product = new Product("productName", 29_00, ProductCategory.STANDARD, false);
-        product.putUpForSale(3,2);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        Product product = new Product("productName", 29_00, Product.ProductCategory.STANDARD, false);
+        product.putUpForSale(3, 2);
         // when
         checkoutSystem.registerProduct(product);
         checkoutSystem.registerProduct(product);
@@ -81,9 +81,9 @@ class CheckoutSystemTest {
     @Test
     void Display_checkout_sum_with_amount_not_reaching_product_discount() {
         // given
-        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
-        Product product = new Product("productName", 29_00, ProductCategory.STANDARD, false);
-        product.putUpForSale(5,4);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        Product product = new Product("productName", 29_00, Product.ProductCategory.STANDARD, false);
+        product.putUpForSale(5, 4);
         // when
         checkoutSystem.registerProduct(product);
         checkoutSystem.registerProduct(product);
@@ -97,43 +97,70 @@ class CheckoutSystemTest {
     @Test
     void Empty_basket_show_zero_in_total() {
         // given
-        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
 
         // then
         assertEquals(0, checkoutSystem.getTotal());
     }
 
     @Test
-    void Card_payment_with_enough_money() {
-        // given
-        CheckoutSystem checkoutSystem = new CheckoutSystem(VALID_CUSTOMER);
-        Product product = VALID_PRODUCT;
-        checkoutSystem.registerProduct(VALID_PRODUCT);
-        Card card = new Card(100_00);
-
-        // when
-        checkoutSystem.pay(card);
-
-        // then
-        assertEquals(70_01, card.getBalance());
-    }
-
-
-    @Test
-    void Static_Membership_Discount_is_applied() {
-        //given
-        final Customer MEMBER_CUSTOMER = new Customer("Miriam", "19990115-2345", 15000_00, 500_00);
-        MEMBER_CUSTOMER.becomeMember();
-
-        CheckoutSystem checkoutSystem = new CheckoutSystem(MEMBER_CUSTOMER);
-        Product product = new Product("productName", 100_00, ProductCategory.STANDARD, false);
+    void Purchase_deducts_total_from_customer() {
+        // Given
+        Customer customer = new Customer("Albert", "19991231-1234", 100_00, false);
+        Product product = new Product("Chair", 10, Product.ProductCategory.STANDARD, false);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
         checkoutSystem.registerProduct(product);
 
-        // when
+        // When
+        checkoutSystem.checkout();
 
-        // then
-        assertEquals(99_00, checkoutSystem.getTotal());
+        // Then
+        assertEquals(100_00 - 12_50, customer.getBankAccountBalance());
     }
+
+    @Test
+    void Payment_with_insufficient_funds_is_declined() {
+        // Given
+        Customer customer = new Customer("Albert", "19991231-1234", 0, false);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
+        checkoutSystem.registerProduct(VALID_PRODUCT);
+
+
+        // Then
+        assertThrows(IllegalStateException.class, () -> customer.pay(checkoutSystem.getTotal()));
+    }
+
+    @Test
+    void Customer_can_try_again_after_failed_payment() {
+        // Given
+        Customer customer = new Customer("Albert", "19991231-1234", 0, false);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
+        checkoutSystem.registerProduct(VALID_PRODUCT);
+        checkoutSystem.checkout();
+
+        // When
+        customer.addMoney(100_00);
+        checkoutSystem.checkout();
+
+        // Then
+        assertEquals(100_00 - 25_00, customer.getBankAccountBalance());
+    }
+
+    @Test
+    void Successful_purchase_empties_basket() {
+        // Given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        checkoutSystem.registerProduct(VALID_PRODUCT);
+
+        // When
+        checkoutSystem.checkout();
+
+        // Then
+        assertEquals(0, checkoutSystem.getBasketSize());
+    }
+
+
+
 
     @Test
     void Discount_campaign_with_even_number_of_products() {
@@ -214,4 +241,71 @@ class CheckoutSystemTest {
 
         assertEquals(450 * 1.25, total);
     }
+
+
+    @Test
+    void Bronze_Membership_Discount_is_applied() {
+        //given
+        Customer customer = new Customer("Memphis", "20001231-2345", 15000_00, true);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
+        Product product = new Product("productName", 100, Product.ProductCategory.STANDARD, false);
+        checkoutSystem.registerProduct(product);
+
+        // then
+        assertEquals((100 * (1 - 0.01)) * 1.25, checkoutSystem.getTotal());
+    }
+
+    @Test
+    void Silver_Membership_Discount_is_applied() {
+        //given
+        Customer customer = new Customer("Memphis", "20001231-2345", 15000_00, true);
+        Membership membership = customer.getMembership();
+        membership.increasePoints(1000); // To silver
+
+        Product product = new Product("productName", 100, Product.ProductCategory.STANDARD, false);
+
+        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
+        checkoutSystem.registerProduct(product);
+
+
+        // then
+        assertEquals((100 * (1 - 0.02)) * 1.25, checkoutSystem.getTotal());
+    }
+
+    @Test
+    void Silver_Membership_Discount_is_applied() {
+        //given
+        Customer customer = new Customer("Memphis", "20001231-2345", 15000_00, true);
+        Membership membership = customer.getMembership();
+        membership.increasePoints(1000); // To silver
+
+        Product product = new Product("productName", 100, Product.ProductCategory.STANDARD, false);
+
+        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
+        checkoutSystem.registerProduct(product);
+
+
+        // then
+        assertEquals((100 * (1 - 0.02)) * 1.25, checkoutSystem.getTotal());
+    }
+
+
+    @Test
+    void Gold_Membership_Discount_is_applied() {
+        //given
+        Customer customer = new Customer("Memphis", "20001231-2345", 15000_00, true);
+        Membership membership = customer.getMembership();
+        membership.increasePoints(2000); // To gold
+
+        Product product = new Product("productName", 100, Product.ProductCategory.STANDARD, false);
+
+        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
+        checkoutSystem.registerProduct(product);
+
+
+        // then
+        assertEquals((100 * (1 - 0.05)) * 1.25, checkoutSystem.getTotal());
+    }
+
+
 }

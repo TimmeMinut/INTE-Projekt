@@ -1,7 +1,6 @@
 package org.example;
 import org.apache.commons.lang3.tuple.Pair;
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class Product {
     private String name;
@@ -36,7 +35,7 @@ public class Product {
     }
 
     private void calculateVATValue() {
-        VATValue =  VATExclusive * productCategory.VATRate;
+        VATValue =  VATExclusive * productCategory.getVATRate();
     }
 
     public String getName() {
@@ -51,7 +50,7 @@ public class Product {
         return VATValue;
     }
 
-    public Pair<Integer,Integer> getQuantityDiscount() { // Ev. refaktorering senare
+    public Pair<Integer,Integer> getQuantityDiscount() { // Ev. refactoring senare
         return quantityDiscount;
     }
 

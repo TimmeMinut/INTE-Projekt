@@ -2,6 +2,8 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +29,11 @@ public class CheckoutSystem {
         }
         discountCampaigns.add(newDiscountCampaign);
     }
+
+    public int getBasketSize() {
+        return basket.size();
+    }
+
 
     public void registerProduct(Product product) {
         if (!basket.containsKey(product)) {
@@ -56,7 +63,7 @@ public class CheckoutSystem {
         Product product = getProduct(productName);
 
         if (!basket.containsKey(product)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Basket is already empty");
         }
 
         if (basket.get(product) == 1) { // Om det bara finns 1 av produkten tas entry bort
@@ -109,50 +116,35 @@ public class CheckoutSystem {
         return totalValue;
     }
 
-    private double getQuantityDiscount(Product product) {
-            if(product.getQuantityDiscount() != null){
-                int toBeBought = basket.get(product);
-                int amountToReachDiscount = (int) product.getQuantityDiscount().getLeft();
+    private double calculateQuantityDiscount(Product product) {
+        Pair<Integer, Integer> quantityDiscount = product.getQuantityDiscount();
+        if (quantityDiscount != null) {
+            int toBeBought = basket.get(product);
+            int take = quantityDiscount.getLeft();
 
-                if(toBeBought >= amountToReachDiscount){
-                    int totalPayFor = 0;
-                    int payFor = (int) product.getQuantityDiscount().getRight();
-                    int temp = toBeBought;
+            if (toBeBought >= take) {
+                int totalPayFor = 0;
+                int payFor = quantityDiscount.getRight();
+                int temp = toBeBought;
 
-                    while(temp >= amountToReachDiscount){
-                        totalPayFor += temp -payFor;
-                        temp =-amountToReachDiscount;
-                    }
-
-                    return ((long) totalPayFor * product.getPrice());
+                while (temp >= take) {
+                    totalPayFor += temp - payFor;
+                    temp = -take;
                 }
 
+                return (totalPayFor * product.getPrice());
             }
-        return (long)0;
+        }
+        return 0;
     }
 
     private double getMembershipDiscount() {
-        switch (customer.getMembership().getLevel()) {
-            case "Bronze":
-                return 0.01;
-            case "Silver":
-                return 0.03;
-            case "Gold":
-                return 0.05;
-            default:
-                return 0;
-        }
-    }
-
-    public void pay(Card card) {
-        double total = getTotal();
-        double balance = card.getBalance();
-
-        if (total > balance) {
-            // TODO How to handle this?
-        }
-
-        card.debit(total);
+        return switch (customer.getMembership().getLevel()) {
+            case "Bronze" -> 0.01;
+            case "Silver" -> 0.02;
+            case "Gold" -> 0.05;
+            default -> 0;
+        };
     }
 
     private double getDiscountFromCampaigns() {
@@ -269,7 +261,14 @@ public class CheckoutSystem {
         return articles;
     }
 
-    //public void registerDiscountCode(String code) {
-    //    discountCodes.add(code);
-    //}
+
+    public void checkout() {
+        double total = getTotal();
+        try {
+            customer.pay(total);
+            basket.clear();
+        } catch (IllegalStateException e) {
+            System.err.println(e.getMessage());
+        }
+    }
 }
