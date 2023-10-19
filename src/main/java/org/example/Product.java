@@ -35,7 +35,7 @@ public class Product {
     }
 
     private void calculateVATValue() {
-        VATValue =  VATExclusive * productCategory.VATRate;
+        VATValue =  VATExclusive * productCategory.getVATRate();
     }
 
     public String getName() {
@@ -50,7 +50,7 @@ public class Product {
         return VATValue;
     }
 
-    public Pair<Integer,Integer> getQuantityDiscount() { // Ev. refaktorering senare
+    public Pair<Integer,Integer> getQuantityDiscount() { // Ev. refactoring senare
         return quantityDiscount;
     }
 

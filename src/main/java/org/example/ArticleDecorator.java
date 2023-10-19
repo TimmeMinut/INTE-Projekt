@@ -3,7 +3,7 @@ package org.example;
 public abstract class ArticleDecorator implements Article {
     private Article article;
 
-    public ArticleDecorator(Article article) {
+    protected ArticleDecorator(Article article) {
         this.article = article;
     }
 

@@ -3,43 +3,45 @@ package org.example;
 public class Customer {
 
     private String name;
-    private String SSN;
+    private String snn;
     private Membership membership;
     private long bankAccountBalance;
-    private long walletBalance;
 
-    public Customer(String name, String SSN, long bankAccountBalance, long walletBalance) {
+    public Customer(String name, String snn, long bankAccountBalance, Boolean member) {
         this.name = name;
-        this.SSN = SSN;
+        this.snn = snn;
         this.bankAccountBalance = bankAccountBalance;
-        this.walletBalance = walletBalance;
+
+        if (member) {
+            this.membership = new Membership(this);
+        }
     }
 
     public String getName() {
         return name;
     }
 
-    public String getSSN() {
-        return SSN;
+    public String getSsn() {
+        return snn;
     }
 
     public long getBankAccountBalance() {
         return bankAccountBalance;
     }
 
-    public long getWalletBalance() {
-        return walletBalance;
-    }
-
     public Membership getMembership() {
         return membership;
     }
-    public void pay(double total) {
-        bankAccountBalance -= (long)(total * 100);
+
+    public void addMoney(long amount) {
+        bankAccountBalance += amount;
     }
 
-    public void becomeMember() {
-        if (this.membership != null) return;
-        membership = new Membership(this);
+    public void pay(double total) throws IllegalStateException {
+        if (bankAccountBalance < (long) (total * 100))
+            throw new IllegalStateException("Payment declined: Insufficient funds.");
+
+        bankAccountBalance -= (long) (total * 100);
     }
+
 }

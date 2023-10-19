@@ -1,9 +1,8 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public class DiscountPercentageDecorator extends ArticleDecorator implements Article {
+
+public class DiscountPercentageDecorator extends ArticleDecorator {
     private double discount;
     public DiscountPercentageDecorator(Article article, Double discount) {
         super(article);
@@ -14,10 +13,5 @@ public class DiscountPercentageDecorator extends ArticleDecorator implements Art
     public double getPrice() {
         // double originalPrice = super.getPrice();
         return super.getPrice() * ( 1 - discount);
-    }
-
-    @Override
-    public String getName() {
-        return super.getName();
     }
 }

@@ -1,24 +1,30 @@
 package org.example;
 
-import java.util.ArrayList;
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class CheckoutSystem {
     private Customer customer;
     private final Map<Product, Integer> basket = new HashMap<>();
-    private ArrayList<String> discountCodes = new ArrayList<>();
 
     public CheckoutSystem(Customer currentCustomer) {
         this.customer = currentCustomer;
     }
+
+    public int getBasketSize() {
+        return basket.size();
+    }
+
 
     public void registerProduct(Product product) {
         if (!basket.containsKey(product)) {
             basket.put(product, 1);
         } else {
             int quantity = basket.get(product);
-            basket.put(product, ++quantity); // Skriver över tidigare quantity med +1
+            quantity++;
+            basket.put(product, quantity); // Skriver över tidigare quantity med +1
         }
     }
 
@@ -37,14 +43,15 @@ public class CheckoutSystem {
         Product product = getProduct(productName);
 
         if (!basket.containsKey(product)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Basket is already empty");
         }
 
         if (basket.get(product) == 1) { // Om det bara finns 1 av produkten tas entry bort
             basket.remove(product);
         } else {
             int quantity = basket.get(product);
-            basket.put(product, --quantity); // Skriver över tidigare quantity med -1
+            quantity--;
+            basket.put(product, quantity); // Skriver över tidigare quantity med -1
         }
     }
 
@@ -63,9 +70,10 @@ public class CheckoutSystem {
         // kolla membership och rabatter
 
         double totalSum = 0;
-        for (Product product : basket.keySet()) {
-            int quantity = basket.get(product);
-            double quantityDiscount = getQuantityDiscount(product);
+        for (Map.Entry<Product, Integer> entry : basket.entrySet()) {
+            Product product = entry.getKey();
+            int quantity = entry.getValue();
+            double quantityDiscount = calculateQuantityDiscount(product);
 
             totalSum += (product.getPrice() * quantity) - quantityDiscount;
         }
@@ -78,63 +86,44 @@ public class CheckoutSystem {
         return (totalSum * (1 - membershipDiscount));
     }
 
-    private double getQuantityDiscount(Product product) {
-        if (product.getQuantityDiscount() != null) {
+    private double calculateQuantityDiscount(Product product) {
+        Pair<Integer, Integer> quantityDiscount = product.getQuantityDiscount();
+        if (quantityDiscount != null) {
             int toBeBought = basket.get(product);
-            int amountToReachDiscount = (int) product.getQuantityDiscount().getLeft();
+            int take = quantityDiscount.getLeft();
 
-            if (toBeBought >= amountToReachDiscount) {
+            if (toBeBought >= take) {
                 int totalPayFor = 0;
-                int payFor = (int) product.getQuantityDiscount().getRight();
+                int payFor = quantityDiscount.getRight();
                 int temp = toBeBought;
 
-                while (temp >= amountToReachDiscount) {
+                while (temp >= take) {
                     totalPayFor += temp - payFor;
-                    temp = -amountToReachDiscount;
+                    temp = -take;
                 }
 
                 return (totalPayFor * product.getPrice());
             }
-
         }
         return 0;
     }
 
     private double getMembershipDiscount() {
-        switch (customer.getMembership().getLevel()) {
-            case "Bronze":
-                return 0.01;
-            case "Silver":
-                return 0.03;
-            case "Gold":
-                return 0.05;
-            default:
-                return 0;
-        }
+        return switch (customer.getMembership().getLevel()) {
+            case "Bronze" -> 0.01;
+            case "Silver" -> 0.02;
+            case "Gold" -> 0.05;
+            default -> 0;
+        };
     }
 
     public void checkout() {
         double total = getTotal();
-        if (customer.getBankAccountBalance() < (long) total)
-            throw new IllegalStateException("Payment declined: Insufficient funds.");
-
-        customer.pay(total);
-    }
-
-
-    public void registerDiscountCode(String code) {
-        discountCodes.add(code);
-    }
-
-    /*private double percentageDiscount() {
-        ArticleGroup articleGroup = new ArticleGroup();
-        for (Article article: basket) {
-            articleGroup.addArticle(article);
+        try {
+            customer.pay(total);
+            basket.clear();
+        } catch (IllegalStateException e) {
+            System.err.println(e.getMessage());
         }
-
-        Article decorator =  new DiscountPercentageDecorator(articleGroup, 0.25);
-        return decorator.getPrice();
-    }*/
-
-
+    }
 }

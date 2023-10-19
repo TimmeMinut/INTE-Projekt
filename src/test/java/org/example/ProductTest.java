@@ -4,7 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ProductTest {
+class ProductTest {
+    public static final Customer NON_MEMBER_CUSTOMER = new Customer("Bob", "19991231-1234", 15000_00, false);
 
     @Test
     void VAT_is_calculated_on_books() {
@@ -51,8 +52,7 @@ public class ProductTest {
     void Product_is_put_up_for_sale() {
         //given
         Product product = new Product("pen", 17, Product.ProductCategory.STANDARD, false);
-        Customer customer = new Customer("Miriam", "19990115-2345", 15000_00, 500_00);
-        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
 
         //when
         product.putUpForSale(3, 2); // Pick 3 pay for 2

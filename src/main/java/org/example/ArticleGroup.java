@@ -1,9 +1,10 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ArticleGroup implements Article {
-    private ArrayList<Article> articles = new ArrayList<>();
+    private List<Article> articles = new ArrayList<>();
 
     public void addArticle(Article article) {
         articles.add(article);

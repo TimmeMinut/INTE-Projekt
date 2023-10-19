@@ -1,6 +1,6 @@
 package org.example;
 
-public interface Article {
+interface Article {
     double getPrice();
     String getName();
 }
