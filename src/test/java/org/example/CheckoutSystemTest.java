@@ -172,7 +172,7 @@ class CheckoutSystemTest {
         checkoutSystem.registerProduct(product1);
         checkoutSystem.registerProduct(product2);
         checkoutSystem.registerProduct(product3);
-        checkoutSystem.addDiscountCampaign(new DiscountCampaign(Product.ProductCategory.STANDARD, 3, 2));
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
 
         double total = checkoutSystem.getTotal();
         System.out.println(product1.getPriceAfterDiscounts());
@@ -197,7 +197,7 @@ class CheckoutSystemTest {
         checkoutSystem.registerProduct(product4);
         checkoutSystem.registerProduct(product5);
 
-        checkoutSystem.addDiscountCampaign(new DiscountCampaign(Product.ProductCategory.STANDARD, 3, 2));
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
 
         double total = checkoutSystem.getTotal();
         System.out.println(product1.getPriceAfterDiscounts());
@@ -225,7 +225,7 @@ class CheckoutSystemTest {
         checkoutSystem.registerProduct(product4);
         checkoutSystem.registerProduct(product5);
 
-        checkoutSystem.addDiscountCampaign(new DiscountCampaign(Product.ProductCategory.STANDARD, 3, 2));
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
 
         double total = checkoutSystem.getTotal();
         System.out.println(product1.getPriceAfterDiscounts());

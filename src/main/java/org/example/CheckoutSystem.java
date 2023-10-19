@@ -8,22 +8,26 @@ public class CheckoutSystem {
     private final Customer customer;
     //private final Map<Product, Integer> basket = new HashMap<>();
     private final List<Product> basket = new ArrayList<>();
-    private final ArrayList<DiscountCampaign> discountCampaigns = new ArrayList<>();
+    //private final ArrayList<DiscountCampaign> discountCampaigns = new ArrayList<>();
+
+    private  Map<Product.ProductCategory, Pair> discountCampaigns;
 
     public CheckoutSystem(Customer currentCustomer) {
         this.customer = currentCustomer;
+        this.discountCampaigns = new HashMap<>();
     }
 
-    public void addDiscountCampaign(DiscountCampaign newDiscountCampaign) {
+    public void addDiscountCampaign(Product.ProductCategory category, int take, int pay) {
         // TODO: Is this messy?
-        if (!discountCampaigns.isEmpty()) {
-            for (DiscountCampaign campaign: discountCampaigns) {
-                if (campaign.getProductCategory() == newDiscountCampaign.getProductCategory()) {
+        if (discountCampaigns.isEmpty()) {
+            for (Map.Entry<Product.ProductCategory, Pair> set : discountCampaigns.entrySet()) {
+
+                if (set.getKey() == category) {
                     throw new IllegalArgumentException();
                 }
             }
         }
-        discountCampaigns.add(newDiscountCampaign);
+        discountCampaigns.put(category, Pair.of(take, pay));
     }
 
     public int getBasketSize() {
@@ -110,18 +114,22 @@ public class CheckoutSystem {
     private double getDiscountFromCampaigns() {
         double discountAmount = 0;
 
-        for ( DiscountCampaign campaign: discountCampaigns) {
-            discountAmount += getDiscountFromCampaign(campaign);
+        if(discountCampaigns == null){
+            return discountAmount;
+        }
+
+        for (Map.Entry<Product.ProductCategory, Pair> entry : discountCampaigns.entrySet()) {
+            discountAmount += getDiscountFromCampaign(entry);
         }
         return discountAmount;
     }
 
-    private double getDiscountFromCampaign(DiscountCampaign discountCampaign) {
+    private double getDiscountFromCampaign(Map.Entry<Product.ProductCategory, Pair> discountCampaign) {
         double appliedDiscountAmount = 0;
 
-        Product.ProductCategory productCategory = discountCampaign.getProductCategory();
-        int buy = discountCampaign.getBuy();
-        int payFor = discountCampaign.getPayFor();
+        Product.ProductCategory productCategory = discountCampaign.getKey();
+        int take = (int)discountCampaign.getValue().getLeft();
+        int pay = (int)discountCampaign.getValue().getRight();
 
         ArrayList<Product> discountedItems = new ArrayList<>();
         
@@ -138,7 +146,7 @@ public class CheckoutSystem {
         ArrayList<Product> sortedItems = getListSorted(discountedItems);
 
         int totalQuantity = sortedItems.size();
-        int discountedQuantity = totalQuantity / buy * ( buy - payFor);
+        int discountedQuantity = totalQuantity / take * ( take - pay);
         int notDiscountedQuantity = totalQuantity - discountedQuantity;
 
         // sätta rabatt på notdiscountedQuantity: de sista i listan
@@ -151,15 +159,15 @@ public class CheckoutSystem {
     }
 
     private void applyDiscountFromCampaigns() {
-        for ( DiscountCampaign campaign: discountCampaigns) {
-            applyDiscountFromCampaigns(campaign);
+        for (Map.Entry<Product.ProductCategory, Pair> entry : discountCampaigns.entrySet()) {
+            applyDiscountFromCampaigns(entry);
         }
     }
 
-    public void applyDiscountFromCampaigns(DiscountCampaign discountCampaign) {
-        Product.ProductCategory productCategory = discountCampaign.getProductCategory();
-        int buy = discountCampaign.getBuy();
-        int payFor = discountCampaign.getPayFor();
+    public void applyDiscountFromCampaigns(Map.Entry<Product.ProductCategory, Pair> discountCampaign) {
+        Product.ProductCategory productCategory = discountCampaign.getKey();
+        int take = (int)discountCampaign.getValue().getLeft();
+        int pay = (int)discountCampaign.getValue().getRight();
 
         ArrayList<Product> discountedItems = new ArrayList<>();
         for (Product product: basket) {
@@ -175,7 +183,7 @@ public class CheckoutSystem {
         ArrayList<Product> sortedItems = getListSorted(discountedItems);
 
         int totalQuantity = basket.size();
-        int discountedQuantity = totalQuantity / buy * ( buy - payFor);
+        int discountedQuantity = totalQuantity / take * ( take - pay);
         int notDiscountedQuantity = totalQuantity - discountedQuantity;
 
         for ( int i = sortedItems.size()-1; i >= notDiscountedQuantity; i--) {
