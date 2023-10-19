@@ -9,7 +9,7 @@ public class Membership {
     // Se Henriks video om mock-objekt / test-doubles för att testa LocalDateTime
     private LocalDateTime startingDateTime;
     private Customer customer;
-    private long points;
+    private double points;
     private String level; // Bronze, Silver, Gold
 
     public Membership(Customer customer) {
@@ -39,14 +39,14 @@ public class Membership {
         return level;
     }
 
-    public void increasePoints(long payment) {
+    public void increasePoints(double payment) {
 
 
         points += payment;
         updateLevel(payment);
     }
 
-    private void updateLevel(long pointsToAdd) {
+    private void updateLevel(double pointsToAdd) {
         // Handlar man för > 4000_00 går man från Bronze till Silver
         // Om man därefter handlar för > 2000_00 går man Från Silver till Gold
         // Efter 1 mån resettas man till Bronze?

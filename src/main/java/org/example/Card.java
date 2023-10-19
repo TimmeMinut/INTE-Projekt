@@ -1,15 +1,15 @@
 package org.example;
 
 public class Card {
-    private long balance;
+    private double balance;
 
-    public Card(long balance) {
+    public Card(double balance) {
         this.balance = balance;
     }
 
-    public long getBalance() { return balance; }
+    public double getBalance() { return balance; }
 
-    public void debit(long sum) {
+    public void debit(double sum) {
         balance -= sum;
     }
 }
