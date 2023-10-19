@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -193,7 +194,7 @@ class CheckoutSystemTest {
         MEMBER_CUSTOMER.becomeMember();
         ConcreteArticle article1 = new ConcreteArticle(100, ProductCategory.STANDARD);
         ConcreteArticle article2 = new ConcreteArticle(100, ProductCategory.STANDARD);
-        ConcreteArticle article3 = new ConcreteArticle(100, ProductCategory.STANDARD);
+        ConcreteArticle article3 = new ConcreteArticle(150, ProductCategory.STANDARD);
         ConcreteArticle article4 = new ConcreteArticle(100, ProductCategory.STANDARD);
         ConcreteArticle article5 = new ConcreteArticle(50, ProductCategory.STANDARD);
         checkoutSystem.registerProduct(article1);
@@ -211,6 +212,6 @@ class CheckoutSystemTest {
         System.out.println(article4.getPriceAfterDiscounts());
         System.out.println(article5.getPriceAfterDiscounts());
 
-        assertEquals(400 * 1.25, total);
+        assertEquals(450 * 1.25, total);
     }
 }
