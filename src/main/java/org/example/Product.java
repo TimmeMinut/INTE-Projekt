@@ -66,13 +66,7 @@ public class Product {
 
     public void setDiscountAmount(double discountAmount) { this.discountAmount = discountAmount; }
 
-    public double getPriceAfterDiscounts() { return price - discountAmount; }
-
-    @Override
-    public int hashCode() {
-        // TODO add name
-        return Objects.hash(name);
-    }
+    public double getPriceAfterDiscounts() { return VATExclusive - discountAmount; }
 
     @Override
     public boolean equals(Object obj) {

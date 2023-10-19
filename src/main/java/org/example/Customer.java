@@ -5,7 +5,7 @@ public class Customer {
     private final String name;
     private final String snn;
     private Membership membership; // Finns det nått lämpligt design-pattern?
-    private final long bankAccountBalance;
+    private long bankAccountBalance;
 
     public Customer(String name, String snn, long bankAccountBalance, Boolean member) {
         this.name = name;

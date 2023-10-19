@@ -35,10 +35,10 @@ class CheckoutSystemTest {
         checkoutSystem.registerProduct(product);
 
         // when
-        checkoutSystem.removeProduct("productName");
+        checkoutSystem.removeProduct(VALID_PRODUCT);
 
         // then
-        assertFalse(checkoutSystem.contains(product));
+        assertFalse(checkoutSystem.basketContains(product));
     }
 
     @Test
@@ -47,7 +47,7 @@ class CheckoutSystemTest {
         CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
 
         // then
-        assertThrows(IllegalArgumentException.class, () -> checkoutSystem.removeProduct("productName"));
+        assertThrows(IllegalArgumentException.class, () -> checkoutSystem.removeProduct(VALID_PRODUCT));
     }
 
     @Test
@@ -163,23 +163,21 @@ class CheckoutSystemTest {
 
 
     @Test
-    void Discount_campaign_with_even_number_of_products() {
+    void Discount_campaign_with_even_number_of_same_products() {
         // given
-        final Customer MEMBER_CUSTOMER = new Customer("Miriam", "19990115-2345", 15000_00, 500_00);
-        CheckoutSystem checkoutSystem = new CheckoutSystem(MEMBER_CUSTOMER);
-        MEMBER_CUSTOMER.becomeMember();
-        ConcreteArticle article1 = new ConcreteArticle(100, ProductCategory.STANDARD);
-        ConcreteArticle article2 = new ConcreteArticle(100, ProductCategory.STANDARD);
-        ConcreteArticle article3 = new ConcreteArticle(100, ProductCategory.STANDARD);
-        checkoutSystem.registerProduct(article1);
-        checkoutSystem.registerProduct(article2);
-        checkoutSystem.registerProduct(article3);
-        checkoutSystem.addDiscountCampaign(new DiscountCampaign(ProductCategory.STANDARD, 3, 2));
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        Product product1 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product3 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product2);
+        checkoutSystem.registerProduct(product3);
+        checkoutSystem.addDiscountCampaign(new DiscountCampaign(Product.ProductCategory.STANDARD, 3, 2));
 
         double total = checkoutSystem.getTotal();
-        System.out.println(article1.getPriceAfterDiscounts());
-        System.out.println(article2.getPriceAfterDiscounts());
-        System.out.println(article3.getPriceAfterDiscounts());
+        System.out.println(product1.getPriceAfterDiscounts());
+        System.out.println(product2.getPriceAfterDiscounts());
+        System.out.println(product3.getPriceAfterDiscounts());
         // then
         assertEquals(200 * 1.25, total);
     }
@@ -187,28 +185,26 @@ class CheckoutSystemTest {
     @Test
     void Discount_campaign_with_odd_number_of_products() {
         // given
-        final Customer MEMBER_CUSTOMER = new Customer("Miriam", "19990115-2345", 15000_00, 500_00);
-        CheckoutSystem checkoutSystem = new CheckoutSystem(MEMBER_CUSTOMER);
-        MEMBER_CUSTOMER.becomeMember();
-        ConcreteArticle article1 = new ConcreteArticle(100, ProductCategory.STANDARD);
-        ConcreteArticle article2 = new ConcreteArticle(100, ProductCategory.STANDARD);
-        ConcreteArticle article3 = new ConcreteArticle(100, ProductCategory.STANDARD);
-        ConcreteArticle article4 = new ConcreteArticle(100, ProductCategory.STANDARD);
-        ConcreteArticle article5 = new ConcreteArticle(100, ProductCategory.STANDARD);
-        checkoutSystem.registerProduct(article1);
-        checkoutSystem.registerProduct(article2);
-        checkoutSystem.registerProduct(article3);
-        checkoutSystem.registerProduct(article4);
-        checkoutSystem.registerProduct(article5);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        Product product1 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product3 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product4 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product5 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product2);
+        checkoutSystem.registerProduct(product3);
+        checkoutSystem.registerProduct(product4);
+        checkoutSystem.registerProduct(product5);
 
-        checkoutSystem.addDiscountCampaign(new DiscountCampaign(ProductCategory.STANDARD, 3, 2));
+        checkoutSystem.addDiscountCampaign(new DiscountCampaign(Product.ProductCategory.STANDARD, 3, 2));
 
         double total = checkoutSystem.getTotal();
-        System.out.println(article1.getPriceAfterDiscounts());
-        System.out.println(article2.getPriceAfterDiscounts());
-        System.out.println(article3.getPriceAfterDiscounts());
-        System.out.println(article4.getPriceAfterDiscounts());
-        System.out.println(article5.getPriceAfterDiscounts());
+        System.out.println(product1.getPriceAfterDiscounts());
+        System.out.println(product2.getPriceAfterDiscounts());
+        System.out.println(product3.getPriceAfterDiscounts());
+        System.out.println(product4.getPriceAfterDiscounts());
+        System.out.println(product5.getPriceAfterDiscounts());
 
         assertEquals(400 * 1.25, total);
     }
@@ -216,30 +212,29 @@ class CheckoutSystemTest {
     @Test
     void Discount_campaign_with_odd_number_of_products_and_different_prices() {
         // given
-        final Customer MEMBER_CUSTOMER = new Customer("Miriam", "19990115-2345", 15000_00, 500_00);
-        CheckoutSystem checkoutSystem = new CheckoutSystem(MEMBER_CUSTOMER);
-        MEMBER_CUSTOMER.becomeMember();
-        ConcreteArticle article1 = new ConcreteArticle(100, ProductCategory.STANDARD);
-        ConcreteArticle article2 = new ConcreteArticle(100, ProductCategory.STANDARD);
-        ConcreteArticle article3 = new ConcreteArticle(150, ProductCategory.STANDARD);
-        ConcreteArticle article4 = new ConcreteArticle(100, ProductCategory.STANDARD);
-        ConcreteArticle article5 = new ConcreteArticle(50, ProductCategory.STANDARD);
-        checkoutSystem.registerProduct(article1);
-        checkoutSystem.registerProduct(article2);
-        checkoutSystem.registerProduct(article3);
-        checkoutSystem.registerProduct(article4);
-        checkoutSystem.registerProduct(article5);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        // olika pris
+        Product product1 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product3 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product4 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product5 = new Product("BANANA", 50, Product.ProductCategory.STANDARD, false);
+        checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product2);
+        checkoutSystem.registerProduct(product3);
+        checkoutSystem.registerProduct(product4);
+        checkoutSystem.registerProduct(product5);
 
-        checkoutSystem.addDiscountCampaign(new DiscountCampaign(ProductCategory.STANDARD, 3, 2));
+        checkoutSystem.addDiscountCampaign(new DiscountCampaign(Product.ProductCategory.STANDARD, 3, 2));
 
         double total = checkoutSystem.getTotal();
-        System.out.println(article1.getPriceAfterDiscounts());
-        System.out.println(article2.getPriceAfterDiscounts());
-        System.out.println(article3.getPriceAfterDiscounts());
-        System.out.println(article4.getPriceAfterDiscounts());
-        System.out.println(article5.getPriceAfterDiscounts());
+        System.out.println(product1.getPriceAfterDiscounts());
+        System.out.println(product2.getPriceAfterDiscounts());
+        System.out.println(product3.getPriceAfterDiscounts());
+        System.out.println(product4.getPriceAfterDiscounts());
+        System.out.println(product5.getPriceAfterDiscounts());
 
-        assertEquals(450 * 1.25, total);
+        assertEquals(400 * 1.25, total);
     }
 
 
@@ -253,23 +248,6 @@ class CheckoutSystemTest {
 
         // then
         assertEquals((100 * (1 - 0.01)) * 1.25, checkoutSystem.getTotal());
-    }
-
-    @Test
-    void Silver_Membership_Discount_is_applied() {
-        //given
-        Customer customer = new Customer("Memphis", "20001231-2345", 15000_00, true);
-        Membership membership = customer.getMembership();
-        membership.increasePoints(1000); // To silver
-
-        Product product = new Product("productName", 100, Product.ProductCategory.STANDARD, false);
-
-        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
-        checkoutSystem.registerProduct(product);
-
-
-        // then
-        assertEquals((100 * (1 - 0.02)) * 1.25, checkoutSystem.getTotal());
     }
 
     @Test

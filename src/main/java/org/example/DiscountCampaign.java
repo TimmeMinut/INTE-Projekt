@@ -1,17 +1,17 @@
 package org.example;
 
 public class DiscountCampaign {
-    private ProductCategory productCategory;
+    private Product.ProductCategory productCategory;
     private int buy;
     private int payFor;
 
-    public DiscountCampaign(ProductCategory productCategory, int buy, int payFor) {
+    public DiscountCampaign(Product.ProductCategory productCategory, int buy, int payFor) {
         this.productCategory = productCategory;
         this.buy = buy;
         this.payFor = payFor;
     }
 
-    public ProductCategory getProductCategory() {
+    public Product.ProductCategory getProductCategory() {
         return productCategory;
     }
 
