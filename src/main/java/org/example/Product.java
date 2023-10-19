@@ -12,7 +12,7 @@ public class Product {
     private double VATValue;
     private double price;
     private double discountAmount = 0;
-    private Pair<Integer,Integer> quantityDiscount;
+    //private Pair<Integer,Integer> quantityDiscount;
 
     public Product(String name, double VATExclusive, ProductCategory productCategory, boolean deposit) {
         this.name = name;
@@ -52,13 +52,13 @@ public class Product {
         return productCategory;
     }
 
-    public Pair<Integer,Integer> getQuantityDiscount() { // Ev. refactoring senare
+    /*public Pair<Integer,Integer> getQuantityDiscount() { // Ev. refactoring senare
         return quantityDiscount;
-    }
+    }*/
 
-    public void putUpForSale(int take, int pay) {
+    /*public void putUpForSale(int take, int pay) {
         quantityDiscount = Pair.of(take, pay);
-    }
+    }*/
 
     public double getPrice() {
         return price;

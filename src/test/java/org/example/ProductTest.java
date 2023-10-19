@@ -48,7 +48,7 @@ class ProductTest {
         assertEquals(12 * 1.12, product.getPrice(), 0.000001);
     }
 
-    @Test
+    /*@Test
     void Product_is_put_up_for_sale() {
         //given
         Product product = new Product("pen", 17, Product.ProductCategory.STANDARD, false);
@@ -63,7 +63,7 @@ class ProductTest {
 
         //then
         assertEquals((17 * 1.25) * 2, checkoutSystem.getTotal());
-    }
+    }*/
 
 
     @Test
