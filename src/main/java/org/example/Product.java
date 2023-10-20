@@ -1,6 +1,7 @@
 package org.example;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 
@@ -79,6 +80,11 @@ public class Product {
         }
 
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "name:" + name + ", price: " + VATExclusive;
     }
     public enum ProductCategory {
         BOOK(0.06),

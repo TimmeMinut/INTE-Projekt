@@ -7,7 +7,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class CheckoutSystem {
     private final Customer customer;
     //private final Map<Product, Integer> basket = new HashMap<>();
-    private final List<Product> basket = new ArrayList<>();
+    private final ArrayList<Product> basket = new ArrayList<>();
     //private final ArrayList<DiscountCampaign> discountCampaigns = new ArrayList<>();
 
     private  Map<Product.ProductCategory, Pair> discountCampaigns;
@@ -144,13 +144,18 @@ public class CheckoutSystem {
         };
 
         ArrayList<Product> sortedItems = getListSorted(discountedItems);
-
+        System.out.println(sortedItems);
         int totalQuantity = sortedItems.size();
         int discountedQuantity = totalQuantity / take * ( take - pay);
         int notDiscountedQuantity = totalQuantity - discountedQuantity;
 
         // sätta rabatt på notdiscountedQuantity: de sista i listan
-        for ( int i = sortedItems.size()-1; i >= notDiscountedQuantity; i--) {
+        //for ( int i = sortedItems.size()-1; i >= notDiscountedQuantity; i--) {
+        //    Product product = sortedItems.get(i);
+        //    appliedDiscountAmount += product.getVATExclusive();
+        //}
+
+        for( int i = 0; i < discountedQuantity; i++) {
             Product product = sortedItems.get(i);
             appliedDiscountAmount += product.getVATExclusive();
         }
@@ -186,10 +191,17 @@ public class CheckoutSystem {
         int discountedQuantity = totalQuantity / take * ( take - pay);
         int notDiscountedQuantity = totalQuantity - discountedQuantity;
 
-        for ( int i = sortedItems.size()-1; i >= notDiscountedQuantity; i--) {
+        //for ( int i = sortedItems.size()-1; i >= notDiscountedQuantity; i--) {
+        //    Product product = sortedItems.get(i);
+        //    product.setDiscountAmount(product.getVATExclusive());
+        //}
+
+
+        for( int i = 0; i < discountedQuantity; i++) {
             Product product = sortedItems.get(i);
             product.setDiscountAmount(product.getVATExclusive());
         }
+
     }
 
     public void applyMembershipCampaign() {
@@ -200,15 +212,15 @@ public class CheckoutSystem {
         }
     }
 
-    private ArrayList<Product> getListSorted(ArrayList<Product> list) {
-        ArrayList<Product> sortedList = new ArrayList<>(list);
-        Collections.sort(list, (product1, product2) -> {
-            double price1 = product1.getVATExclusive();
-            double price2 = product2.getVATExclusive();
+    // TODO: private?
+    public ArrayList<Product> getListSorted(ArrayList<Product> list) {
+        Collections.sort(list, Comparator.comparingDouble(Product::getVATExclusive));
+        return list;
+    }
 
-            return Double.compare(price1, price2);
-        });
-        return sortedList;
+    // TODO ta bort?
+    public ArrayList<Product> getBasket() {
+        return basket;
     }
 
 

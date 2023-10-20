@@ -1,5 +1,6 @@
 package org.example;
 
+import jdk.jfr.Description;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -10,9 +11,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CheckoutSystemTest {
     private static final Customer NON_MEMBER_CUSTOMER = new Customer("Bob", "19991231-1234", 15000_00, false);
-
     private static final Product VALID_PRODUCT = new Product("productName", 20, Product.ProductCategory.STANDARD, false);
+    static Customer getBronzeCustomer() {
+        return new Customer("name", "19990101-0101", 0, true);
+    }
 
+    static Customer getSilverCustomer() {
+        Customer customer = new Customer("name", "19990101-0101", 0, true);
+        customer.getMembership().increasePoints(1500);
+        return customer;
+    }
+
+    static Customer getGoldCustomer() {
+        Customer customer = new Customer("name", "19990101-0101", 0, true);
+        customer.getMembership().increasePoints(2500);
+        return customer;
+    }
     @Test
     void Product_is_added_to_basket() {
         // given
@@ -62,37 +76,6 @@ class CheckoutSystemTest {
         // then
         assertEquals(29 * 1.25, checkoutSystem.getTotal());
     }
-
-    /*@Test
-    void Display_checkout_sum_with_amount_reaching_product_discount() {
-        // given
-        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
-        Product product = new Product("productName", 29_00, Product.ProductCategory.STANDARD, false);
-        product.putUpForSale(3, 2);
-        // when
-        checkoutSystem.registerProduct(product);
-        checkoutSystem.registerProduct(product);
-        checkoutSystem.registerProduct(product);
-
-        // then
-        assertEquals((29 * 1.25) * 2, checkoutSystem.getTotal());
-    }*/
-
-    /*@Test
-    void Display_checkout_sum_with_amount_not_reaching_product_discount() {
-        // given
-        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
-        Product product = new Product("productName", 29_00, Product.ProductCategory.STANDARD, false);
-        product.putUpForSale(5, 4);
-        // when
-        checkoutSystem.registerProduct(product);
-        checkoutSystem.registerProduct(product);
-        checkoutSystem.registerProduct(product);
-        checkoutSystem.registerProduct(product);
-
-        // then
-        assertEquals((29_00 * 1.25) * 4, checkoutSystem.getTotal());
-    }*/
 
     @Test
     void Empty_basket_show_zero_in_total() {
@@ -160,6 +143,48 @@ class CheckoutSystemTest {
     }
 
 
+    @Test
+    @Description("Test case: 1")
+    void getTotal_non_member_standard_vat_product() {
+        // given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        Product product = new Product("SHIRT", 299, Product.ProductCategory.STANDARD, false);
+
+        // when
+        checkoutSystem.registerProduct(product);
+
+        // then
+        assertEquals(299*1.25, checkoutSystem.getTotal());
+    }
+
+    @Test
+    @Description("Test case: 2")
+    void getTotal_bronze_member_standard_vat_product() {
+        // given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(getBronzeCustomer());
+        Product product = new Product("SHIRT", 299, Product.ProductCategory.STANDARD, false);
+
+        // when
+        checkoutSystem.registerProduct(product);
+
+        // then
+        assertEquals( (299 * ( 1 - 0.01) * 1.25), checkoutSystem.getTotal());
+    }
+
+    @Test
+    @Description("Test case: 3")
+    void getTotal_silver_member_standard_vat_product() {
+        // given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(getSilverCustomer());
+        Product product = new Product("SHIRT", 299, Product.ProductCategory.STANDARD, false);
+
+        // when
+        checkoutSystem.registerProduct(product);
+
+        // then
+        assertEquals( (299 * ( 1 - 0.05) * 1.25), checkoutSystem.getTotal());
+    }
+
 
 
     @Test
@@ -214,11 +239,11 @@ class CheckoutSystemTest {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
         // olika pris
-        Product product1 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product1 = new Product("APPLE", 50, Product.ProductCategory.STANDARD, false);
         Product product2 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
-        Product product3 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product3 = new Product("APPLE", 50, Product.ProductCategory.STANDARD, false);
         Product product4 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
-        Product product5 = new Product("BANANA", 50, Product.ProductCategory.STANDARD, false);
+        Product product5 = new Product("BANANA", 100, Product.ProductCategory.STANDARD, false);
         checkoutSystem.registerProduct(product1);
         checkoutSystem.registerProduct(product2);
         checkoutSystem.registerProduct(product3);
@@ -234,7 +259,31 @@ class CheckoutSystemTest {
         System.out.println(product4.getPriceAfterDiscounts());
         System.out.println(product5.getPriceAfterDiscounts());
 
-        assertEquals(400 * 1.25, total);
+        assertEquals(350 * 1.25, total);
+    }
+
+    @Test
+    void johantestar() {
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        Product product1 = new Product("APPLE", 50, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product3 = new Product("APPLE", 75, Product.ProductCategory.STANDARD, false);
+        Product product4 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product5 = new Product("BANANA", 100, Product.ProductCategory.STANDARD, false);
+        checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product2);
+        checkoutSystem.registerProduct(product3);
+        checkoutSystem.registerProduct(product4);
+        checkoutSystem.registerProduct(product5);
+
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
+
+        ArrayList<Product> listBeforeSort = checkoutSystem.getBasket();
+        System.out.println(listBeforeSort);
+
+        ArrayList<Product> sorted = checkoutSystem.getListSorted(listBeforeSort);
+        System.out.println(sorted);
+
     }
 
 
