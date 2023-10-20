@@ -10,8 +10,17 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CheckoutSystemTest {
+
+    static final double TOLERANCE = 0.00001;
     private static final Customer NON_MEMBER_CUSTOMER = new Customer("Bob", "19991231-1234", 15000_00, false);
     private static final Product VALID_PRODUCT = new Product("productName", 20, Product.ProductCategory.STANDARD, false);
+    private static final double BRONZE_DISCOUNT_MULTIPLIER = 1-0.01;
+    private static final double SILVER_DISCOUNT_MULTIPLIER = 1-0.02;
+    private static final double GOLD_DISCOUNT_MULTIPLIER = 1-0.05;
+    private static final double STANDARD_VAT_MULTIPLIER = 1.25;
+    private static final double FOOD_VAT_MULTIPLIER = 1.12;
+    private static final double BOOK_VAT_MULTIPLIER = 1.06;
+
     static Customer getBronzeCustomer() {
         return new Customer("name", "19990101-0101", 0, true);
     }
@@ -154,7 +163,7 @@ class CheckoutSystemTest {
         checkoutSystem.registerProduct(product);
 
         // then
-        assertEquals(299*1.25, checkoutSystem.getTotal());
+        assertEquals(299 * STANDARD_VAT_MULTIPLIER, checkoutSystem.getTotal());
     }
 
     @Test
@@ -168,7 +177,7 @@ class CheckoutSystemTest {
         checkoutSystem.registerProduct(product);
 
         // then
-        assertEquals( (299 * ( 1 - 0.01) * 1.25), checkoutSystem.getTotal());
+        assertEquals(299 * BRONZE_DISCOUNT_MULTIPLIER * STANDARD_VAT_MULTIPLIER, checkoutSystem.getTotal());
     }
 
     @Test
@@ -182,10 +191,70 @@ class CheckoutSystemTest {
         checkoutSystem.registerProduct(product);
 
         // then
-        assertEquals( (299 * ( 1 - 0.05) * 1.25), checkoutSystem.getTotal());
+        assertEquals(299 * SILVER_DISCOUNT_MULTIPLIER * STANDARD_VAT_MULTIPLIER, checkoutSystem.getTotal());
     }
 
+    @Test
+    @Description("Test case: 4")
+    void getTotal_gold_member_standard_vat_product() {
+        // given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(getGoldCustomer());
+        Product product = new Product("SHIRT", 299, Product.ProductCategory.STANDARD, false);
 
+        // when
+        checkoutSystem.registerProduct(product);
+
+        // then
+        assertEquals(299 * GOLD_DISCOUNT_MULTIPLIER * STANDARD_VAT_MULTIPLIER, checkoutSystem.getTotal());
+    }
+
+    @Test
+    @Description("Test case: 5")
+    void get_Total_non_member_book_vat_product() {
+        // given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        Product product = new Product("BOOK", 98, Product.ProductCategory.BOOK, false);
+
+        // when
+        checkoutSystem.registerProduct(product);
+
+        // then
+        assertEquals(98 * BOOK_VAT_MULTIPLIER, checkoutSystem.getTotal(), TOLERANCE);
+    }
+
+    @Test
+    @Description("Test case: 6")
+    void get_Total_non_member_food_vat_product() {
+        // given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        Product product = new Product("APPLE", 1.99, Product.ProductCategory.FOOD, false);
+
+        // when
+        checkoutSystem.registerProduct(product);
+
+        // then
+        assertEquals(1.99 * FOOD_VAT_MULTIPLIER, checkoutSystem.getTotal());
+    }
+
+    @Test
+    @Description("Test case: 7")
+    void get_Total_buy3_pay_for2_exact_number_of_products() {
+        // given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        Product product1 = new Product("SHIRT", 299, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("SHIRT", 299, Product.ProductCategory.STANDARD, false);
+        Product product3 = new Product("SHIRT", 299, Product.ProductCategory.STANDARD, false);
+
+        // when
+        checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product2);
+        checkoutSystem.registerProduct(product3);
+
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
+
+        // then
+        assertEquals(2 * 299 * STANDARD_VAT_MULTIPLIER, checkoutSystem.getTotal());
+    }
 
     @Test
     void Discount_campaign_with_even_number_of_same_products() {
@@ -261,31 +330,6 @@ class CheckoutSystemTest {
 
         assertEquals(350 * 1.25, total);
     }
-
-    @Test
-    void johantestar() {
-        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
-        Product product1 = new Product("APPLE", 50, Product.ProductCategory.STANDARD, false);
-        Product product2 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
-        Product product3 = new Product("APPLE", 75, Product.ProductCategory.STANDARD, false);
-        Product product4 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
-        Product product5 = new Product("BANANA", 100, Product.ProductCategory.STANDARD, false);
-        checkoutSystem.registerProduct(product1);
-        checkoutSystem.registerProduct(product2);
-        checkoutSystem.registerProduct(product3);
-        checkoutSystem.registerProduct(product4);
-        checkoutSystem.registerProduct(product5);
-
-        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
-
-        ArrayList<Product> listBeforeSort = checkoutSystem.getBasket();
-        System.out.println(listBeforeSort);
-
-        ArrayList<Product> sorted = checkoutSystem.getListSorted(listBeforeSort);
-        System.out.println(sorted);
-
-    }
-
 
     @Test
     void Bronze_Membership_Discount_is_applied() {
