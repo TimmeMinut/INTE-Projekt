@@ -84,7 +84,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "name:" + name + ", price: " + VATExclusive;
+        return "name:" + name + ", price: " + VATExclusive + ", priceAfterDiscount: " + getPriceAfterDiscounts();
     }
     public enum ProductCategory {
         BOOK(0.06),

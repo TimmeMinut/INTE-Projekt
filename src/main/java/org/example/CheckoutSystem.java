@@ -61,12 +61,14 @@ public class CheckoutSystem {
             return 0;
         }
 
+        //resetDiscounts();
+
         double total = getBasketValue();
-        
         double totalDiscountFromCampaigns = getDiscountFromCampaigns();
         double totalDiscountFromMembership = getBasketValue() * getMembershipDiscount();
+        //resetDiscounts();
         if (totalDiscountFromCampaigns > totalDiscountFromMembership) {
-            applyDiscountFromCampaigns();
+            getDiscountFromCampaigns();
             total -= totalDiscountFromCampaigns;
         } else {
             applyMembershipCampaign();
@@ -76,6 +78,12 @@ public class CheckoutSystem {
         total += getTotalVAT();
 
         return total;
+    }
+
+    private void resetDiscounts() {
+        for (Product product: basket) {
+            product.setDiscountAmount(0);
+        }
     }
 
     public double getTotalVAT() {
@@ -121,37 +129,41 @@ public class CheckoutSystem {
     }
 
     private double getDiscountFromCampaign(Map.Entry<Product.ProductCategory, Pair> discountCampaign) {
-        //resetDiscounts();
-
         double appliedDiscountAmount = 0;
 
-        Product.ProductCategory productCategory = discountCampaign.getKey();
         int take = (int)discountCampaign.getValue().getLeft();
         int pay = (int)discountCampaign.getValue().getRight();
 
-        ArrayList<Product> discountedItems = new ArrayList<>();
-        
-        for (Product product: basket) {
-            if (product.getProductCategory().equals(productCategory)) {
-                discountedItems.add(product);
-            }
-        }
+        ArrayList<Product> campaignProducts = getProductsFromBasket(discountCampaign.getKey());
 
-        if(discountedItems.isEmpty()) {
+        //if(campaignProducts.isEmpty()) {
             // TODO Felhantering?
-        };
+        //};
 
-        ArrayList<Product> sortedItems = getListSorted(discountedItems);
-        System.out.println(sortedItems);
-        int totalQuantity = sortedItems.size();
-        int discountedQuantity = totalQuantity / take * ( take - pay);
+        Collections.sort(campaignProducts, Comparator.comparingDouble(Product::getVATExclusive));
+
+
+        int discountedQuantity = campaignProducts.size() / take * ( take - pay);
 
         for( int i = 0; i < discountedQuantity; i++) {
-            Product product = sortedItems.get(i);
+            Product product = campaignProducts.get(i);
             appliedDiscountAmount += product.getVATExclusive();
+            product.setDiscountAmount(product.getVATExclusive());
         }
 
         return appliedDiscountAmount;
+    }
+
+    private ArrayList<Product> getProductsFromBasket(Product.ProductCategory productCategory) {
+        ArrayList<Product> products = new ArrayList<>();
+
+        for (Product product: basket) {
+            if (product.getProductCategory().equals(productCategory)) {
+                products.add(product);
+            }
+        }
+
+        return products;
     }
 
     private void applyDiscountFromCampaigns() {
@@ -209,5 +221,10 @@ public class CheckoutSystem {
         } catch (IllegalStateException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    // TODO: ta bort
+    public ArrayList<Product> getBasket() {
+        return basket;
     }
 }
