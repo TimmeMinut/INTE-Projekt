@@ -19,7 +19,7 @@ public class CheckoutSystem {
 
     public void addDiscountCampaign(Product.ProductCategory category, int take, int pay) {
         // TODO: Is this messy?
-        if (discountCampaigns.isEmpty()) {
+        if (!discountCampaigns.isEmpty()) {
             for (Map.Entry<Product.ProductCategory, Pair> set : discountCampaigns.entrySet()) {
 
                 if (set.getKey() == category) {
