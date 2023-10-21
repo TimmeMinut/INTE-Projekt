@@ -1,5 +1,6 @@
 package org.example;
 
+import jdk.jfr.Description;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -183,6 +184,7 @@ class CheckoutSystemTest {
     }
 
     @Test
+    @Description("ID 8")
     void Discount_campaign_with_odd_number_of_products() {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
@@ -197,7 +199,7 @@ class CheckoutSystemTest {
         checkoutSystem.registerProduct(product4);
         checkoutSystem.registerProduct(product5);
 
-        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 5, 3);
 
         double total = checkoutSystem.getTotal();
         System.out.println(product1.getPriceAfterDiscounts());
@@ -206,39 +208,131 @@ class CheckoutSystemTest {
         System.out.println(product4.getPriceAfterDiscounts());
         System.out.println(product5.getPriceAfterDiscounts());
 
-        assertEquals(400 * 1.25, total);
+        assertEquals(300 * 1.25, total);
     }
 
+
+
     @Test
-    void Discount_campaign_with_odd_number_of_products_and_different_prices() {
+    @Description ("ID 13")
+    void Discount_campaign_with_different_prices() {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
         // olika pris
         Product product1 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
-        Product product2 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("BANANA", 50, Product.ProductCategory.STANDARD, false);
         Product product3 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
-        Product product4 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
-        Product product5 = new Product("BANANA", 50, Product.ProductCategory.STANDARD, false);
+
+         checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product2);
+        checkoutSystem.registerProduct(product3);
+
+
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
+
+        double total = checkoutSystem.getTotal();
+        System.out.println(product1.getPriceAfterDiscounts());
+        System.out.println(product2.getPriceAfterDiscounts());
+        System.out.println(product3.getPriceAfterDiscounts());
+
+
+        assertEquals(200 * 1.25, total);
+    }
+
+    @Test
+    @Description("ID 9")
+    void Discount_campaign_with_not_enough_products_to_be_applied() {
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        // olika pris
+        Product product1 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+
+        checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product2);
+
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
+
+        assertEquals(20 * 1.25, checkoutSystem.getTotal());
+    }
+
+    @Test
+    @Description("ID 10")
+    void Discount_campaign_odd_number() {
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        // olika pris
+        Product product1 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product3 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product4 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+
+
+        checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product2);
+        checkoutSystem.registerProduct(product3);
+        checkoutSystem.registerProduct(product4);
+
+
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
+        assertEquals(30 * 1.25, checkoutSystem.getTotal());
+
+    }
+
+    @Test
+    @Description("ID 11")
+    void Discount_campaign_reached_two_times() {
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        // olika pris
+        Product product1 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product3 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product4 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product5 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product6 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+
         checkoutSystem.registerProduct(product1);
         checkoutSystem.registerProduct(product2);
         checkoutSystem.registerProduct(product3);
         checkoutSystem.registerProduct(product4);
         checkoutSystem.registerProduct(product5);
+        checkoutSystem.registerProduct(product6);
+
 
         checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
+        assertEquals(40 * 1.25, checkoutSystem.getTotal());
+    }
 
-        double total = checkoutSystem.getTotal();
-        System.out.println(product1.getPriceAfterDiscounts());
-        System.out.println(product2.getPriceAfterDiscounts());
-        System.out.println(product3.getPriceAfterDiscounts());
-        System.out.println(product4.getPriceAfterDiscounts());
-        System.out.println(product5.getPriceAfterDiscounts());
+    @Test
+    @Description("ID 12")
+    void Discount_campaign_reached_two_times_with_odd_number() {
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        // olika pris
+        Product product1 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product3 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product4 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product5 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product6 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product7 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
+        Product product8 = new Product("PEN", 10, Product.ProductCategory.STANDARD, false);
 
-        assertEquals(400 * 1.25, total);
+        checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product2);
+        checkoutSystem.registerProduct(product3);
+        checkoutSystem.registerProduct(product4);
+        checkoutSystem.registerProduct(product5);
+        checkoutSystem.registerProduct(product6);
+        checkoutSystem.registerProduct(product7);
+        checkoutSystem.registerProduct(product8);
+
+
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
+        assertEquals(60 * 1.25, checkoutSystem.getTotal());
     }
 
 
-    @Test
+
+
+        @Test
     void Bronze_Membership_Discount_is_applied() {
         //given
         Customer customer = new Customer("Memphis", "20001231-2345", 15000_00, true);
