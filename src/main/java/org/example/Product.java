@@ -3,7 +3,7 @@ package org.example;
 public class Product {
     private String name;
     private ProductCategory productCategory;
-    private double VATExclusive; //price excluding VAT
+    private double VATExclusive;
     private double VATValue;
     private double price;
     private boolean deposit;
@@ -47,13 +47,6 @@ public class Product {
         return productCategory;
     }
 
-    /*public Pair<Integer,Integer> getQuantityDiscount() { // Ev. refactoring senare
-        return quantityDiscount;
-    }*/
-
-    /*public void putUpForSale(int take, int pay) {
-        quantityDiscount = Pair.of(take, pay);
-    }*/
 
     public double getPrice() {
         return price;
@@ -78,8 +71,9 @@ public class Product {
 
     @Override
     public String toString() {
-        return name;
+        return "name:" + name + ", price: " + VATExclusive;
     }
+
     public enum ProductCategory {
         BOOK(0.06),
         FOOD(0.12),
