@@ -11,15 +11,31 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CheckoutSystemTest {
     private static final Customer NON_MEMBER_CUSTOMER = new Customer("Bob", "19991231-1234", 15000_00, false);
-    private static final double BRONZE_DISCOUNT_MULTIPLIER = 1.01;
-    private static final double SILVER_DISCOUNT_MULTIPLIER = 1.02;
-    private static final double GOLD_DISCOUNT_MULTIPLIER = 1.05;
+
+    private Customer getBronzeCustomer() {
+        Customer customer = new Customer("MemphisBronze", "20001231-1234", 15000_00, true);
+        return customer;
+    }
+
+    private Customer getSilverCustomer() {
+        Customer customer = new Customer("MemphisSilver", "20101231-1234", 15000_00, true);
+        customer.getMembership().increasePoints(1000);
+        return customer;
+    }
+
+    private Customer getGoldCustomer() {
+        Customer customer = new Customer("MemphisGold", "20201231-1234", 15000_00, true);
+        customer.getMembership().increasePoints(2000);
+        return customer;
+    }
+
+    private static final double BRONZE_DISCOUNT_MULTIPLIER = 0.99;
+    private static final double SILVER_DISCOUNT_MULTIPLIER = 0.98;
+    private static final double GOLD_DISCOUNT_MULTIPLIER = 0.95;
 
     private static final double BOOK_VAT_MULTIPLIER = 1.06;
     private static final double FOOD_VAT_MULTIPLIER = 1.12;
     private static final double STANDARD_VAT_MULTIPLIER = 1.25;
-
-
 
 
     private static final Product VALID_PRODUCT = new Product("productName", 20, Product.ProductCategory.STANDARD, false);
@@ -343,23 +359,93 @@ class CheckoutSystemTest {
     }
 
     @Test
+    @Description("Test case 15")
     void ekv_15() {
         // nm 3f2 + 4f3 + 5f3 st + b + f  rätt produkt rabatteras K8
+        // (K8) >1 kampanj med kombinationer av K1-K6 - vad är tillräckligt?
+
+        // 3f2 7 prod   4f3 5 prod 5f3 3prod
+
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 5, 3);
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.FOOD, 4, 3);
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.BOOK, 3, 2);
+
+
+        Product[] products = new Product[7];
+
+        // 7 st standard
+        products[0] = new Product("Ruler", 15, Product.ProductCategory.STANDARD, false);
+        products[1] = new Product("Pen", 10, Product.ProductCategory.STANDARD, false);
+        products[2] = new Product("Eraser", 5, Product.ProductCategory.STANDARD, false);
+
+        // 5 st book
+        products[3] = new Product("Juice", 8, Product.ProductCategory.FOOD, false);
+        products[4] = new Product("Apple", 6, Product.ProductCategory.FOOD, false);
+        products[5] = new Product("Milk", 4, Product.ProductCategory.FOOD, false);
+        products[6] = new Product("Gum", 2, Product.ProductCategory.FOOD, false);
+
+
+        // 3 st food
+
+
+        for (int i = 0; i < 7; i++) {
+            checkoutSystem.registerProduct(products[i]);
+        }
     }
 
     @Test
-    void ekv_16() {
+    @Description("Test case 16")
+    void Empty_basket_returns_0_total() {
         // nm - st total 0 P0
+        // Given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        double total = checkoutSystem.getTotal();
+
+        // Then
+        assertEquals(0, total);
     }
 
     @Test
-    void ekv_17() {
+    @Description("Test case 17")
+    void Membership_discount_is_applied_if_largest() {
         // g 3f2 s g > 3f2 VS1
+        CheckoutSystem checkoutSystem = new CheckoutSystem(getGoldCustomer());
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
+
+        Product product1 = new Product("Bottle", 100, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("Eraser", 5, Product.ProductCategory.STANDARD, false);
+
+        checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product2);
+
+        double total = checkoutSystem.getTotal();
+
+        assertEquals(((200 + 5 * GOLD_DISCOUNT_MULTIPLIER) * STANDARD_VAT_MULTIPLIER), total);
     }
 
     @Test
-    void ekv_18() {
+    @Description("Test case 18")
+    void Campaign_discount_is_applied_if_largest() {
         // g 3f2 s g <3f2 VS2
+
+        CheckoutSystem checkoutSystem = new CheckoutSystem(getGoldCustomer());
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
+
+        Product[] products = new Product[3];
+
+        products[0] = new Product("Bottle", 100, Product.ProductCategory.STANDARD, false);
+        products[1] = new Product("Bottle", 100, Product.ProductCategory.STANDARD, false);
+        products[2] = new Product("Bottle", 100, Product.ProductCategory.STANDARD, false);
+
+        for (int i = 0; i < 3; i++) {
+            checkoutSystem.registerProduct(products[i]);
+        }
+
+        double total = checkoutSystem.getTotal();
+
+        assertEquals(200 * STANDARD_VAT_MULTIPLIER, total);
     }
 
     @Test

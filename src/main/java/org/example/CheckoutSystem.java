@@ -182,7 +182,7 @@ public class CheckoutSystem {
 
         ArrayList<Product> sortedItems = getListSorted(discountedItems);
 
-        int totalQuantity = basket.size();
+        int totalQuantity = sortedItems.size();
         int discountedQuantity = totalQuantity / take * (take - pay);
         int notDiscountedQuantity = totalQuantity - discountedQuantity;
 
