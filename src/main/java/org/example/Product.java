@@ -1,18 +1,13 @@
 package org.example;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.Objects;
-
 
 public class Product {
     private String name;
-    private double VATExclusive; //price excluding VAT
     private ProductCategory productCategory;
-    private boolean deposit;
+    private double VATExclusive; //price excluding VAT
     private double VATValue;
     private double price;
+    private boolean deposit;
     private double discountAmount = 0;
-    //private Pair<Integer,Integer> quantityDiscount;
 
     public Product(String name, double VATExclusive, ProductCategory productCategory, boolean deposit) {
         this.name = name;
@@ -79,6 +74,11 @@ public class Product {
         }
 
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
     public enum ProductCategory {
         BOOK(0.06),
