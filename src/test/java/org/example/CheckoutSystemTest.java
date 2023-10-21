@@ -36,6 +36,7 @@ class CheckoutSystemTest {
         customer.getMembership().increasePoints(2500);
         return customer;
     }
+
     @Test
     void Product_is_added_to_basket() {
         // given
@@ -300,22 +301,10 @@ class CheckoutSystemTest {
         checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 5, 3);
 
         // when
-        //System.out.println("5 varor: " + checkoutSystem.getTotal());
-        //System.out.println("5 varor: " + checkoutSystem.getBasket());
         checkoutSystem.getTotal();
         checkoutSystem.removeProduct(product3);
-        //System.out.println("Tagit bort en vara: " + checkoutSystem.getBasket());
         checkoutSystem.getTotal();
-        //System.out.println("Tagit bort en vara och kört getTotal: " + checkoutSystem.getBasket());
-
         checkoutSystem.registerProduct(product3);
-        //System.out.println("Lagt till en vara: " + checkoutSystem.getBasket());
-        //System.out.println(checkoutSystem.getBasket());
-        //System.out.println();
-
-
-        //System.out.println("getTotal efter tillagd vara: " + checkoutSystem.getBasket());
-        //System.out.println("EXP: " + 3 * 299 * STANDARD_VAT_MULTIPLIER);
 
         // then
         assertEquals(3 * 299 * STANDARD_VAT_MULTIPLIER, checkoutSystem.getTotal());

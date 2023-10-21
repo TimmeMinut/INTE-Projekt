@@ -61,16 +61,17 @@ public class CheckoutSystem {
             return 0;
         }
 
-        //resetDiscounts();
+        resetDiscounts(); // TODO Where to reset?
 
         double total = getBasketValue();
         double totalDiscountFromCampaigns = getDiscountFromCampaigns();
         double totalDiscountFromMembership = getBasketValue() * getMembershipDiscount();
-        //resetDiscounts();
+
         if (totalDiscountFromCampaigns > totalDiscountFromMembership) {
-            getDiscountFromCampaigns();
+            //getDiscountFromCampaigns();
             total -= totalDiscountFromCampaigns;
         } else {
+            resetDiscounts(); // TODO Where to reset?
             applyMembershipCampaign();
             total -= totalDiscountFromMembership;
         }
