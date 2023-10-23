@@ -47,39 +47,6 @@ class ProductTest {
 
         assertEquals(12 * 1.12, product.getPrice(), 0.000001);
     }
-
-    /*@Test
-    void Product_is_put_up_for_sale() {
-        //given
-        Product product = new Product("pen", 17, Product.ProductCategory.STANDARD, false);
-        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
-
-        //when
-        product.putUpForSale(3, 2); // Pick 3 pay for 2
-        for (int i = 0; i < 3; i++) {
-            checkoutSystem.registerProduct(product); // Add 3 pens to basket
-        }
-
-
-        //then
-        assertEquals((17 * 1.25) * 2, checkoutSystem.getTotal());
-    }*/
-
-
-    @Test
-    void ProductCategory_is_put_for_sale() {
-
-    }
-
-    @Test
-    void Product_sale_is_taken_down() {
-
-    }
-
-    @Test
-    void ProductCategory_sale_is_taken_down() {
-
-    }
 }
 
 

@@ -1,10 +1,12 @@
 package org.example;
 
 import jdk.jfr.Description;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Map;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,7 +49,7 @@ class CheckoutSystemTest {
         checkoutSystem.registerProduct(product);
 
         // then
-        assertEquals(product, checkoutSystem.getProduct("productName"));
+        assertEquals(product, checkoutSystem.getProduct(product));
     }
 
     @Test
@@ -151,6 +153,23 @@ class CheckoutSystemTest {
         assertEquals(0, checkoutSystem.getBasketSize());
     }
 
+    @Test
+    void addDiscountCampaign() {
+        // given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        Product product = new Product("journal", 25, Product.ProductCategory.BOOK, true);
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.BOOK, 3,2);
+        Boolean campaignAdded = false;
+
+        //when
+        for (Map.Entry<Product.ProductCategory, Pair> entry : checkoutSystem.getDiscountCampaigns().entrySet()) {
+            if (entry.getKey().equals(Product.ProductCategory.BOOK) && entry.getValue().equals(Pair.of(3,2))){
+                campaignAdded = true;
+            }
+        }
+        //then
+        assertEquals(true, campaignAdded); //
+    }
 
     @Test
     @Description("Test case: 1")
@@ -358,8 +377,6 @@ class CheckoutSystemTest {
         assertEquals(300 * 1.25, total);
     }
 
-
-
     @Test
     @Description ("ID 13")
     void Discount_campaign_with_different_prices() {
@@ -487,8 +504,6 @@ class CheckoutSystemTest {
         assertEquals(60 * 1.25, checkoutSystem.getTotal());
     }
 
-
-
     @Test
     void Discount_campaign_take_smaller_than_pay() {
         // Given
@@ -527,7 +542,6 @@ class CheckoutSystemTest {
         assertEquals((100 * (SILVER_DISCOUNT_MULTIPLIER)) * 1.25, checkoutSystem.getTotal());
     }
 
-
     @Test
     void Gold_Membership_Discount_is_applied() {
         //given
@@ -544,7 +558,6 @@ class CheckoutSystemTest {
         // then
         assertEquals((100 * (GOLD_DISCOUNT_MULTIPLIER)) * STANDARD_VAT_MULTIPLIER, checkoutSystem.getTotal());
     }
-
 
     @Test
     @Description("Test Case: 14")
@@ -639,7 +652,7 @@ class CheckoutSystemTest {
 
         double total = checkoutSystem.getTotal();
 
-        assertEquals(((200 + 5 * GOLD_DISCOUNT_MULTIPLIER) * STANDARD_VAT_MULTIPLIER), total);
+        assertEquals((((200 + 5) * GOLD_DISCOUNT_MULTIPLIER) * STANDARD_VAT_MULTIPLIER), total);
     }
 
     @Test
@@ -683,5 +696,6 @@ class CheckoutSystemTest {
         // Then
         assertEquals(950 * 1.25, checkoutSystem.getTotal());
     }
+
 
 }

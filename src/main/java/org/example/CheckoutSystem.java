@@ -24,19 +24,18 @@ public class CheckoutSystem {
         return basket.size();
     }
 
-
     public void registerProduct(Product product) {
         basket.add(product);
     }   
 
-    public Product getProduct(String productName) {
-        Product product = null;
+    public Product getProduct(Product product) {
+        Product productFound = null;
         for (Product p : basket) {
-            if (productName.equals(p.getName())) {
-                product = p;
+            if (product.equals(p)) {
+                productFound = p;
             }
         }
-        return product;
+        return productFound;
     }
 
     public void removeProduct(Product product) {
@@ -55,17 +54,16 @@ public class CheckoutSystem {
             return 0;
         }
 
-        resetDiscounts(); // TODO Where to reset?
+        resetDiscounts();
 
         double total = getBasketValue();
         double totalDiscountFromCampaigns = getDiscountFromCampaigns();
         double totalDiscountFromMembership = total * getMembershipDiscount();
 
         if (totalDiscountFromCampaigns > totalDiscountFromMembership) {
-            //getDiscountFromCampaigns();
             total -= totalDiscountFromCampaigns;
         } else {
-            resetDiscounts(); // TODO Where to reset?
+            resetDiscounts();
             applyMembershipCampaign();
             total -= totalDiscountFromMembership;
         }
@@ -131,9 +129,9 @@ public class CheckoutSystem {
 
         ArrayList<Product> campaignProducts = getProductsFromBasket(discountCampaign.getKey());
 
-        //if(campaignProducts.isEmpty()) {
-            // TODO Felhantering?
-        //};
+        if(campaignProducts.isEmpty()) {
+            return appliedDiscountAmount;
+        };
 
         Collections.sort(campaignProducts, Comparator.comparingDouble(Product::getVATExclusive));
 
@@ -179,20 +177,20 @@ public class CheckoutSystem {
             }
         }
 
-        if(discountedItems.isEmpty()) {
-            // TODO Felhantering?
+        if(!discountedItems.isEmpty()) {
+            ArrayList<Product> sortedItems = getListSorted(discountedItems);
+
+            int totalQuantity = sortedItems.size();
+            int discountedQuantity = totalQuantity / take * (take - pay);
+            int notDiscountedQuantity = totalQuantity - discountedQuantity;
+
+            for( int i = 0; i < discountedQuantity; i++) {
+                Product product = sortedItems.get(i);
+                product.setDiscountAmount(product.getVATExclusive());
+            }
         };
         
-        ArrayList<Product> sortedItems = getListSorted(discountedItems);
 
-        int totalQuantity = sortedItems.size();
-        int discountedQuantity = totalQuantity / take * (take - pay);
-        int notDiscountedQuantity = totalQuantity - discountedQuantity;
-
-        for( int i = 0; i < discountedQuantity; i++) {
-            Product product = sortedItems.get(i);
-            product.setDiscountAmount(product.getVATExclusive());
-        }
 
     }
 
@@ -208,6 +206,10 @@ public class CheckoutSystem {
         return list;
     }
 
+    public Map<Product.ProductCategory, Pair> getDiscountCampaigns() {
+        return discountCampaigns;
+    }
+
     public void checkout() {
         double total = getTotal();
         try {
@@ -216,10 +218,5 @@ public class CheckoutSystem {
         } catch (IllegalStateException e) {
             System.err.println(e.getMessage());
         }
-    }
-
-    // TODO: ta bort
-    public ArrayList<Product> getBasket() {
-        return basket;
     }
 }

@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Objects;
+
 public class Product {
     private String name;
     private ProductCategory productCategory;
@@ -7,6 +9,14 @@ public class Product {
     private double VATValue;
     private double price;
     private boolean deposit;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product product)) return false;
+        return Objects.equals(getName(), product.getName());
+    }
+
     private double discountAmount = 0;
 
     public Product(String name, double VATExclusive, ProductCategory productCategory, boolean deposit) {
@@ -56,22 +66,17 @@ public class Product {
 
     public double getPriceAfterDiscounts() { return VATExclusive - discountAmount; }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
 
-        if (obj instanceof Product object) {
-            return this.getName().equals(object.getName());
-        }
-
-        return false;
-    }
 
     @Override
     public String toString() {
-        return "name:" + name + ", price: " + VATExclusive;
+        return "Product{" +
+                "name='" + name + '\'' +
+                ", VATExclusive=" + VATExclusive +
+                ", VATValue=" + VATValue +
+                ", price=" + price +
+                ", discountAmount=" + discountAmount +
+                '}';
     }
 
     public enum ProductCategory {
