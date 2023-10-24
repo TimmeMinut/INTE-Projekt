@@ -2,9 +2,13 @@ package org.example;
 
 import jdk.jfr.Description;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -639,7 +643,7 @@ class CheckoutSystemTest {
 
         double total = checkoutSystem.getTotal();
 
-        assertEquals(((200 + 5 * GOLD_DISCOUNT_MULTIPLIER) * STANDARD_VAT_MULTIPLIER), total);
+        assertEquals((200 + 5) * GOLD_DISCOUNT_MULTIPLIER * STANDARD_VAT_MULTIPLIER, total);
     }
 
     @Test
@@ -682,6 +686,39 @@ class CheckoutSystemTest {
 
         // Then
         assertEquals(950 * 1.25, checkoutSystem.getTotal());
+    }
+
+    @Test
+    void If_customer_is_underage_for_alcohol_call_personell() {
+        // given
+        Customer customer = new Customer("customer", "20100525-1234", 10000_00, true);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
+        Product product = new Product("alcohol", 159, Product.ProductCategory.ALCOHOL, false);
+
+        // when
+        checkoutSystem.registerProduct(product);
+
+        // then
+        assertTrue(checkoutSystem.customerIsTooYoungForAcohol());
+    }
+
+    @ParameterizedTest(name = "#{index}: ")
+    @MethodSource("ssns")
+    void If_customer_is_underage_for_alcohol_call_personell(String ssn) {
+        // given
+        Customer customer = new Customer("customer", ssn, 10000_00, true);
+        CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
+        Product product = new Product("alcohol", 159, Product.ProductCategory.ALCOHOL, false);
+
+        // when
+        checkoutSystem.registerProduct(product);
+
+        // then
+        assertTrue(checkoutSystem.customerIsTooYoungForAcohol());
+    }
+
+    static Stream<String> ssns() {
+        return Stream.of("20021022-1234", "20021023-1234", "20021024-1234", "20021025-1234", "20021026-1234");
     }
 
 }

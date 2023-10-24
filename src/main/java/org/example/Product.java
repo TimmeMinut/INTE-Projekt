@@ -77,7 +77,8 @@ public class Product {
     public enum ProductCategory {
         BOOK(0.06),
         FOOD(0.12),
-        STANDARD(0.25);
+        STANDARD(0.25),
+        ALCOHOL(0.25);
 
         private final double VATRate;
 

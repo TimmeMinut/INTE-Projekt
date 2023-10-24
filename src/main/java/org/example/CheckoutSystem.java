@@ -1,5 +1,8 @@
 package org.example;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -218,8 +221,44 @@ public class CheckoutSystem {
         }
     }
 
-    // TODO: ta bort
-    public ArrayList<Product> getBasket() {
-        return basket;
+    public boolean customerIsTooYoungForAcohol() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+        try {
+            LocalDate birthDate = LocalDate.parse(customer.getSsn().substring(0, 8), formatter);
+            LocalDate currentDate = LocalDate.now();
+            int age = currentDate.minusYears(birthDate.getYear()).getYear();
+            System.out.println("Age: " + age);
+
+            if(age < 21) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return true;
     }
+
+    public boolean customerIsTooYoungForAcohol(String ssn) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+        try {
+            LocalDate birthDate = LocalDate.parse(ssn.substring(0, 8), formatter);
+            LocalDate currentDate = LocalDate.now();
+            int age = currentDate.minusYears(birthDate.getYear()).getYear();
+            System.out.println("Age: " + age);
+
+            if(age < 21) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return true;
+    }
+
 }
