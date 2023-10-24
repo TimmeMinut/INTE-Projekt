@@ -42,7 +42,7 @@ class ProductTest {
     }
 
     @Test
-    void calculatePriceExcludingDeposit() {
+    void CalculatePriceExcludingDeposit() {
         Product product = new Product("Twix", 12, Product.ProductCategory.FOOD, false);
 
         assertEquals(12 * 1.12, product.getPrice(), 0.000001);
