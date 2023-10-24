@@ -6,19 +6,19 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class CheckoutSystem {
     private final Customer customer;
-    private final ArrayList<Product> basket = new ArrayList<>();
-    private Map<Product.ProductCategory, Pair> discountCampaigns;
+    private final List<Product> basket = new ArrayList<>();
+    private Map<Product.ProductCategory, Pair<Integer, Integer>> discountCampaigns;
 
     private Money cashRegister;
 
-    public CheckoutSystem(Customer currentCustomer) {
+    CheckoutSystem(Customer currentCustomer) {
         this.customer = currentCustomer;
         this.discountCampaigns = new HashMap<>();
         this.cashRegister = new Money(25000_00);
     }
 
-    public void addDiscountCampaign(Product.ProductCategory category, int take, int pay) {
-        if (take <= pay) throw new IllegalArgumentException("Take need to be larger than pay!");
+    void addDiscountCampaign(Product.ProductCategory category, int take, int pay) {
+        if (take <= pay) throw new IllegalArgumentException("Take needs to be larger than pay!");
 
         discountCampaigns.put(category, Pair.of(take, pay));
     }
@@ -52,7 +52,7 @@ public class CheckoutSystem {
         return basket.contains(product);
     }
 
-    public double getTotal() {
+    double getTotal() {
         if (basket.isEmpty()) {
             return 0;
         }
@@ -82,7 +82,7 @@ public class CheckoutSystem {
         }
     }
 
-    public double getTotalVAT() {
+    double getTotalVAT() {
         double totalVAT = 0;
         for (Product product : basket) {
             totalVAT += product.getPriceAfterDiscounts() * product.getProductCategory().getVATRate();
@@ -90,7 +90,7 @@ public class CheckoutSystem {
         return totalVAT;
     }
 
-    public double getBasketValue() {
+    double getBasketValue() {
         double totalValue = 0;
         for (Product product : basket) {
             totalValue += product.getVATExclusive();
@@ -118,17 +118,17 @@ public class CheckoutSystem {
             return discountAmount;
         }
 
-        for (Map.Entry<Product.ProductCategory, Pair> entry : discountCampaigns.entrySet()) {
+        for (Map.Entry<Product.ProductCategory, Pair<Integer, Integer>> entry : discountCampaigns.entrySet()) {
             discountAmount += getDiscountFromCampaign(entry);
         }
         return discountAmount;
     }
 
-    private double getDiscountFromCampaign(Map.Entry<Product.ProductCategory, Pair> discountCampaign) {
+    private double getDiscountFromCampaign(Map.Entry<Product.ProductCategory, Pair<Integer, Integer>> discountCampaign) {
         double appliedDiscountAmount = 0;
 
-        int take = (int) discountCampaign.getValue().getLeft();
-        int pay = (int) discountCampaign.getValue().getRight();
+        int take = discountCampaign.getValue().getLeft();
+        int pay = discountCampaign.getValue().getRight();
 
         ArrayList<Product> campaignProducts = getProductsFromBasket(discountCampaign.getKey());
 
@@ -163,43 +163,7 @@ public class CheckoutSystem {
         return products;
     }
 
-    private void applyDiscountFromCampaigns() {
-        for (Map.Entry<Product.ProductCategory, Pair> entry : discountCampaigns.entrySet()) {
-            applyDiscountFromCampaigns(entry);
-        }
-    }
-
-    public void applyDiscountFromCampaigns(Map.Entry<Product.ProductCategory, Pair> discountCampaign) {
-        Product.ProductCategory productCategory = discountCampaign.getKey();
-        int take = (int) discountCampaign.getValue().getLeft();
-        int pay = (int) discountCampaign.getValue().getRight();
-
-        ArrayList<Product> discountedItems = new ArrayList<>();
-        for (Product product : basket) {
-            if (product.getProductCategory().equals(productCategory)) {
-                discountedItems.add(product);
-            }
-        }
-
-        if (discountedItems.isEmpty()) {
-            // TODO Felhantering?
-        }
-        ;
-
-        ArrayList<Product> sortedItems = getListSorted(discountedItems);
-
-        int totalQuantity = sortedItems.size();
-        int discountedQuantity = totalQuantity / take * (take - pay);
-        int notDiscountedQuantity = totalQuantity - discountedQuantity;
-
-        for (int i = 0; i < discountedQuantity; i++) {
-            Product product = sortedItems.get(i);
-            product.setDiscountAmount(product.getVATExclusive());
-        }
-
-    }
-
-    public void applyMembershipCampaign() {
+    void applyMembershipCampaign() {
         double membershipDiscount = getMembershipDiscount();
 
         for (Product product : basket) {
@@ -207,17 +171,15 @@ public class CheckoutSystem {
         }
     }
 
-    private ArrayList<Product> getListSorted(ArrayList<Product> list) {
-        Collections.sort(list, Comparator.comparingDouble(Product::getVATExclusive));
-        return list;
+
+    Map<Product.ProductCategory, Pair<Integer, Integer>> getDiscountCampaigns() {
+        if (discountCampaigns == null) throw new IllegalArgumentException("There are no discount Campaigns!");
+
+        return Map.copyOf(discountCampaigns);
     }
 
-    public Map<Product.ProductCategory, Pair> getDiscountCampaigns() {
-        return discountCampaigns;
-    }
 
-
-    public void checkoutByCard() {
+    void checkoutByCard() {
         double total = getTotal();
         try {
             customer.payByCard(total);

@@ -23,6 +23,7 @@ public class InventoryReport {
     }
 
     //Rapporteringsmetod2
+    // generateReport for X products -Timor
 
     //etc
 }
