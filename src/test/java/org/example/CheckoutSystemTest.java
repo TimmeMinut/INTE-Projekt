@@ -106,7 +106,7 @@ class CheckoutSystemTest {
         checkoutSystem.registerProduct(product);
 
         // When
-        checkoutSystem.checkout();
+        checkoutSystem.checkoutByCard();
 
         // Then
         assertEquals(100_00 - 12_50, customer.getBankAccountBalance());
@@ -121,7 +121,7 @@ class CheckoutSystemTest {
 
 
         // Then
-        assertThrows(IllegalStateException.class, () -> customer.pay(checkoutSystem.getTotal()));
+        assertThrows(IllegalStateException.class, () -> customer.payByCard(checkoutSystem.getTotal()));
     }
 
     @Test
@@ -130,11 +130,11 @@ class CheckoutSystemTest {
         Customer customer = new Customer("Albert", "19991231-1234", 0, false);
         CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
         checkoutSystem.registerProduct(VALID_PRODUCT);
-        checkoutSystem.checkout();
+        checkoutSystem.checkoutByCard();
 
         // When
         customer.addMoney(100_00);
-        checkoutSystem.checkout();
+        checkoutSystem.checkoutByCard();
 
         // Then
         assertEquals(100_00 - 25_00, customer.getBankAccountBalance());
@@ -147,7 +147,7 @@ class CheckoutSystemTest {
         checkoutSystem.registerProduct(VALID_PRODUCT);
 
         // When
-        checkoutSystem.checkout();
+        checkoutSystem.checkoutByCard();
 
         // Then
         assertEquals(0, checkoutSystem.getBasketSize());
@@ -273,60 +273,6 @@ class CheckoutSystemTest {
 
         // then
         assertEquals(2 * 299 * STANDARD_VAT_MULTIPLIER, checkoutSystem.getTotal());
-    }
-
-    @Test
-    @Description("Test case: 20")
-    void getTotal_removing_product_after_campaigns_are_applied(){
-        // given
-        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
-        Product product1 = new Product("SHIRT1", 299, Product.ProductCategory.STANDARD, false);
-        Product product2 = new Product("SHIRT2", 299, Product.ProductCategory.STANDARD, false);
-        Product product3 = new Product("SHIRT3", 299, Product.ProductCategory.STANDARD, false);
-        Product product4 = new Product("SHIRT4", 299, Product.ProductCategory.STANDARD, false);
-        Product product5 = new Product("SHIRT5", 299, Product.ProductCategory.STANDARD, false);
-        checkoutSystem.registerProduct(product1);
-        checkoutSystem.registerProduct(product2);
-        checkoutSystem.registerProduct(product3);
-        checkoutSystem.registerProduct(product4);
-        checkoutSystem.registerProduct(product5);
-
-        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 5, 3);
-
-        // when
-        checkoutSystem.getTotal();
-        checkoutSystem.removeProduct(product3);
-
-        // then
-        assertEquals(4 * 299 * STANDARD_VAT_MULTIPLIER, checkoutSystem.getTotal());
-    }
-
-    @Test
-    @Description("Test case: 21")
-    void getTotal_removing_and_registering_product_after_campaigns_are_applied(){
-        // given
-        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
-        Product product1 = new Product("SHIRT1", 299, Product.ProductCategory.STANDARD, false);
-        Product product2 = new Product("SHIRT2", 299, Product.ProductCategory.STANDARD, false);
-        Product product3 = new Product("SHIRT3", 299, Product.ProductCategory.STANDARD, false);
-        Product product4 = new Product("SHIRT4", 299, Product.ProductCategory.STANDARD, false);
-        Product product5 = new Product("SHIRT5", 299, Product.ProductCategory.STANDARD, false);
-        checkoutSystem.registerProduct(product1);
-        checkoutSystem.registerProduct(product2);
-        checkoutSystem.registerProduct(product3);
-        checkoutSystem.registerProduct(product4);
-        checkoutSystem.registerProduct(product5);
-
-        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 5, 3);
-
-        // when
-        checkoutSystem.getTotal();
-        checkoutSystem.removeProduct(product3);
-        checkoutSystem.getTotal();
-        checkoutSystem.registerProduct(product3);
-
-        // then
-        assertEquals(3 * 299 * STANDARD_VAT_MULTIPLIER, checkoutSystem.getTotal());
     }
 
     @Test
@@ -471,7 +417,6 @@ class CheckoutSystemTest {
         checkoutSystem.registerProduct(product5);
         checkoutSystem.registerProduct(product6);
 
-
         checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
         assertEquals(40 * 1.25, checkoutSystem.getTotal());
     }
@@ -562,7 +507,6 @@ class CheckoutSystemTest {
     @Test
     @Description("Test Case: 14")
     void Lowest_price_product_is_deducted() {
-        // nm 3f2 + 4f3 st + f rätt produkt rabatteras k6
         // (K6) Olika priser inom samma kategori - varan med lägst pris rabatteras
         CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
         checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
@@ -590,44 +534,56 @@ class CheckoutSystemTest {
 
     @Test
     @Description("Test case 15")
-    void ekv_15() {
-        // nm 3f2 + 4f3 + 5f3 st + b + f  rätt produkt rabatteras K8
-        // (K8) >1 kampanj med kombinationer av K1-K6 - vad är tillräckligt?
-
-        // 3f2 7 prod   4f3 5 prod 5f3 3prod
+    void Lowest_price_products_are_deducted_multiple_campaigns() {
+        // (K8) >1 kampanj med kombinationer av K1-K6
 
         CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
-        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 5, 3);
-        checkoutSystem.addDiscountCampaign(Product.ProductCategory.FOOD, 4, 3);
-        checkoutSystem.addDiscountCampaign(Product.ProductCategory.BOOK, 3, 2);
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.BOOK, 4, 3);
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.FOOD, 5, 3);
 
+        Product[] products = new Product[15];
 
-        Product[] products = new Product[7];
+        // 7 Products. Take 3 Pay 2
+        // 2 Cheapest should be discounted
+        products[0] = new Product("Cup", 80, Product.ProductCategory.STANDARD, false);
+        products[1] = new Product("Cup", 80, Product.ProductCategory.STANDARD, false);
+        products[2] = new Product("Cup", 80, Product.ProductCategory.STANDARD, false);
+        products[3] = new Product("Bottle", 100, Product.ProductCategory.STANDARD, false);
+        products[4] = new Product("Bottle", 100, Product.ProductCategory.STANDARD, false);
+        products[5] = new Product("Chair", 50, Product.ProductCategory.STANDARD, false);
+        products[6] = new Product("Watch", 120, Product.ProductCategory.STANDARD, false);
 
-        // 7 st standard
-        products[0] = new Product("Ruler", 15, Product.ProductCategory.STANDARD, false);
-        products[1] = new Product("Pen", 10, Product.ProductCategory.STANDARD, false);
-        products[2] = new Product("Eraser", 5, Product.ProductCategory.STANDARD, false);
+        // 5 Products. Take 4 pay 3
+        // Cheapest should be discounted
+        products[7] = new Product("Pamphlet", 20, Product.ProductCategory.BOOK, false);
+        products[8] = new Product("CookBook", 50, Product.ProductCategory.BOOK, false);
+        products[9] = new Product("CookBook", 50, Product.ProductCategory.BOOK, false);
+        products[10] = new Product("FantasyBook", 60, Product.ProductCategory.BOOK, false);
+        products[11] = new Product("Magazine", 20, Product.ProductCategory.BOOK, false);
 
-        // 5 st book
-        products[3] = new Product("Juice", 8, Product.ProductCategory.FOOD, false);
-        products[4] = new Product("Apple", 6, Product.ProductCategory.FOOD, false);
-        products[5] = new Product("Milk", 4, Product.ProductCategory.FOOD, false);
-        products[6] = new Product("Gum", 2, Product.ProductCategory.FOOD, false);
+        // 3 Products. Take 5 pay 3
+        // None should be discounted
+        products[12] = new Product("Apple", 10, Product.ProductCategory.FOOD, false);
+        products[13] = new Product("Apple", 10, Product.ProductCategory.FOOD, false);
+        products[14] = new Product("Pear", 5, Product.ProductCategory.FOOD, false);
 
-
-        // 3 st food
-
-
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 15; i++) {
             checkoutSystem.registerProduct(products[i]);
         }
+
+
+        double total = checkoutSystem.getTotal();
+
+        assertEquals((80 + 80 + 100 + 100 + 120) * STANDARD_VAT_MULTIPLIER +
+                        (20 + 50 + 50 + 60) * BOOK_VAT_MULTIPLIER +
+                        (10 + 10 + 5) * FOOD_VAT_MULTIPLIER
+                , total);
     }
 
     @Test
     @Description("Test case 16")
     void Empty_basket_returns_0_total() {
-        // nm - st total 0 P0
         // Given
         CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
         double total = checkoutSystem.getTotal();
@@ -639,20 +595,20 @@ class CheckoutSystemTest {
     @Test
     @Description("Test case 17")
     void Membership_discount_is_applied_if_largest() {
-        // g 3f2 s g > 3f2 VS1
         CheckoutSystem checkoutSystem = new CheckoutSystem(getGoldCustomer());
         checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
 
         Product product1 = new Product("Bottle", 100, Product.ProductCategory.STANDARD, false);
-        Product product2 = new Product("Eraser", 5, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("Bottle", 100, Product.ProductCategory.STANDARD, false);
+        Product product3 = new Product("Eraser", 5, Product.ProductCategory.STANDARD, false);
 
         checkoutSystem.registerProduct(product1);
-        checkoutSystem.registerProduct(product1);
         checkoutSystem.registerProduct(product2);
+        checkoutSystem.registerProduct(product3);
 
         double total = checkoutSystem.getTotal();
 
-        assertEquals((((200 + 5) * GOLD_DISCOUNT_MULTIPLIER) * STANDARD_VAT_MULTIPLIER), total);
+        assertEquals(((205 * GOLD_DISCOUNT_MULTIPLIER) * STANDARD_VAT_MULTIPLIER), total);
     }
 
     @Test
@@ -679,7 +635,8 @@ class CheckoutSystemTest {
     }
 
     @Test
-    void If_both_discounts_are_equal_only_one_is_applied_19() {
+    @Description("Test case 19")
+    void If_both_discounts_are_equal_only_one_is_applied() {
         // Med VATExclusive 50 och 20 st produkter ger både ta 20 betala 19 och 5% membership 50 i discount
 
         // Given
@@ -695,6 +652,61 @@ class CheckoutSystemTest {
 
         // Then
         assertEquals(950 * 1.25, checkoutSystem.getTotal());
+    }
+
+
+    @Test
+    @Description("Test case: 20")
+    void getTotal_removing_product_after_campaigns_are_applied() {
+        // given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        Product product1 = new Product("SHIRT1", 299, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("SHIRT2", 299, Product.ProductCategory.STANDARD, false);
+        Product product3 = new Product("SHIRT3", 299, Product.ProductCategory.STANDARD, false);
+        Product product4 = new Product("SHIRT4", 299, Product.ProductCategory.STANDARD, false);
+        Product product5 = new Product("SHIRT5", 299, Product.ProductCategory.STANDARD, false);
+        checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product2);
+        checkoutSystem.registerProduct(product3);
+        checkoutSystem.registerProduct(product4);
+        checkoutSystem.registerProduct(product5);
+
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 5, 3);
+
+        // when
+        checkoutSystem.getTotal();
+        checkoutSystem.removeProduct(product3);
+
+        // then
+        assertEquals(4 * 299 * STANDARD_VAT_MULTIPLIER, checkoutSystem.getTotal());
+    }
+
+    @Test
+    @Description("Test case: 21")
+    void getTotal_removing_and_registering_product_after_campaigns_are_applied() {
+        // given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        Product product1 = new Product("SHIRT1", 299, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("SHIRT2", 299, Product.ProductCategory.STANDARD, false);
+        Product product3 = new Product("SHIRT3", 299, Product.ProductCategory.STANDARD, false);
+        Product product4 = new Product("SHIRT4", 299, Product.ProductCategory.STANDARD, false);
+        Product product5 = new Product("SHIRT5", 299, Product.ProductCategory.STANDARD, false);
+        checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product2);
+        checkoutSystem.registerProduct(product3);
+        checkoutSystem.registerProduct(product4);
+        checkoutSystem.registerProduct(product5);
+
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 5, 3);
+
+        // when
+        checkoutSystem.getTotal();
+        checkoutSystem.removeProduct(product3);
+        checkoutSystem.getTotal();
+        checkoutSystem.registerProduct(product3);
+
+        // then
+        assertEquals(3 * 299 * STANDARD_VAT_MULTIPLIER, checkoutSystem.getTotal());
     }
 
 
