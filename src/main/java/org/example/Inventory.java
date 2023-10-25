@@ -43,4 +43,3 @@ class Inventory {
         return products;
     }
 }
-

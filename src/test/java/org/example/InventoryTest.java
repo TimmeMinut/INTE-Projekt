@@ -58,3 +58,12 @@ public class InventoryTest {
         assertEquals(5, inventoryMap.get(product2)); // Kontrollera att rätt mängd av produkt 2 finns i inventory
     }
 }
+
+
+
+
+
+
+
+
+
