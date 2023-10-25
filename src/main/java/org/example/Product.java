@@ -3,12 +3,14 @@ package org.example;
 import java.util.Objects;
 
 public class Product {
-    private String name;
-    private ProductCategory productCategory;
-    private double VATExclusive;
+    final private String name;
+    final private ProductCategory productCategory;
+    final private double VATExclusive;
     private double VATValue;
     private double price;
-    private boolean deposit;
+    final private boolean deposit;
+    private double discountAmount = 0;
+
 
     @Override
     public boolean equals(Object o) {
@@ -16,8 +18,6 @@ public class Product {
         if (!(o instanceof Product product)) return false;
         return Objects.equals(getName(), product.getName());
     }
-
-    private double discountAmount = 0;
 
     public Product(String name, double VATExclusive, ProductCategory productCategory, boolean deposit) {
         this.name = name;
@@ -62,10 +62,30 @@ public class Product {
         return price;
     }
 
-    public void setDiscountAmount(double discountAmount) { this.discountAmount = discountAmount; }
+    void setDiscountAmount(double discountAmount) {
+        if(discountAmount > 0 && discountAmount <= VATExclusive){
+            this.discountAmount = discountAmount;
+        }else{
+            throw new IllegalArgumentException("Discount must be greater than '0' and less than VATExclusive ");
+        }
+    }
 
-    public double getPriceAfterDiscounts() { return VATExclusive - discountAmount; }
+    double getPriceAfterDiscount() {
+        double VATExclusiveAfterDiscount = VATExclusive-discountAmount;
+        double VATValueAfterDiscount = VATExclusiveAfterDiscount * productCategory.getVATRate();
+        double priceAfterDiscount = VATExclusiveAfterDiscount + VATValueAfterDiscount;
 
+        if(deposit){
+            priceAfterDiscount += 2;
+        }
+
+
+        return priceAfterDiscount;
+
+
+    }
+
+    public double getVATExclusiveAfterDiscounts() { return VATExclusive - discountAmount; }
 
 
     @Override
@@ -77,6 +97,9 @@ public class Product {
                 ", price=" + price +
                 ", discountAmount=" + discountAmount +
                 '}';
+    }
+
+    public double getDiscountAmount(double discount) { return discountAmount;
     }
 
     public enum ProductCategory {

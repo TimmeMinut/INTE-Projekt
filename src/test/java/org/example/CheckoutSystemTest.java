@@ -342,9 +342,9 @@ class CheckoutSystemTest {
         checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
 
         double total = checkoutSystem.getTotal();
-        System.out.println(product1.getPriceAfterDiscounts());
-        System.out.println(product2.getPriceAfterDiscounts());
-        System.out.println(product3.getPriceAfterDiscounts());
+        System.out.println(product1.getVATExclusiveAfterDiscounts());
+        System.out.println(product2.getVATExclusiveAfterDiscounts());
+        System.out.println(product3.getVATExclusiveAfterDiscounts());
         // then
         assertEquals(200 * 1.25, total);
     }
@@ -368,11 +368,11 @@ class CheckoutSystemTest {
         checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 5, 3);
 
         double total = checkoutSystem.getTotal();
-        System.out.println(product1.getPriceAfterDiscounts());
-        System.out.println(product2.getPriceAfterDiscounts());
-        System.out.println(product3.getPriceAfterDiscounts());
-        System.out.println(product4.getPriceAfterDiscounts());
-        System.out.println(product5.getPriceAfterDiscounts());
+        System.out.println(product1.getVATExclusiveAfterDiscounts());
+        System.out.println(product2.getVATExclusiveAfterDiscounts());
+        System.out.println(product3.getVATExclusiveAfterDiscounts());
+        System.out.println(product4.getVATExclusiveAfterDiscounts());
+        System.out.println(product5.getVATExclusiveAfterDiscounts());
 
         assertEquals(300 * 1.25, total);
     }
@@ -395,9 +395,9 @@ class CheckoutSystemTest {
         checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
 
         double total = checkoutSystem.getTotal();
-        System.out.println(product1.getPriceAfterDiscounts());
-        System.out.println(product2.getPriceAfterDiscounts());
-        System.out.println(product3.getPriceAfterDiscounts());
+        System.out.println(product1.getVATExclusiveAfterDiscounts());
+        System.out.println(product2.getVATExclusiveAfterDiscounts());
+        System.out.println(product3.getVATExclusiveAfterDiscounts());
 
 
         assertEquals(200 * 1.25, total);

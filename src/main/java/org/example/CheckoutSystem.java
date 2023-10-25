@@ -82,7 +82,7 @@ public class CheckoutSystem {
     public double getTotalVAT() {
         double totalVAT = 0;
         for (Product product: basket) {
-            totalVAT += product.getPriceAfterDiscounts() * product.getProductCategory().getVATRate();
+            totalVAT += product.getVATExclusiveAfterDiscounts() * product.getProductCategory().getVATRate();
         }
         return totalVAT;
     }
