@@ -30,17 +30,16 @@ public class Inventory {
             int currentQuantity = products.get(product);
 
             if (currentQuantity >= quantity) {
-                    products.put(product, currentQuantity - quantity);
-                } else {
-                    System.out.println("Product quantity is insufficient.");
-                }
+                products.put(product, currentQuantity - quantity);
             } else {
-                System.out.println("Product not found in inventory.");
+                System.out.println("Product quantity is insufficient.");
             }
+        } else {
+            System.out.println("Product not found in inventory.");
         }
+    }
 
     public Map<Product, Integer> getInventory() {
         return products;
     }
-    }
-
+}
