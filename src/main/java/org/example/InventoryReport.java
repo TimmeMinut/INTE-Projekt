@@ -2,17 +2,17 @@ package org.example;
 
 import java.util.Map;
 
-public class InventoryReport {
+class InventoryReport {
     private Inventory inventory;
 
-    public InventoryReport(Inventory inventory) {
+    InventoryReport(Inventory inventory) {
         this.inventory = inventory;
     }
 
 
 
     //Rapporteringmetod1
-    public void generateInventoryReport() {
+    void generateInventoryReport() {
         Map<Product, Integer> inventoryData = inventory.getInventory();
         System.out.println("Lagersaldorapport:");
         for (Map.Entry<Product, Integer> entry : inventoryData.entrySet()) {

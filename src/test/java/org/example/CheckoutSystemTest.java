@@ -4,8 +4,7 @@ import jdk.jfr.Description;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+
 import java.util.Map;
 
 
@@ -157,18 +156,18 @@ class CheckoutSystemTest {
     void addDiscountCampaign() {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
-        Product product = new Product("journal", 25, Product.ProductCategory.BOOK, true);
         checkoutSystem.addDiscountCampaign(Product.ProductCategory.BOOK, 3,2);
-        Boolean campaignAdded = false;
+        boolean campaignAdded = false;
 
         //when
-        for (Map.Entry<Product.ProductCategory, Pair> entry : checkoutSystem.getDiscountCampaigns().entrySet()) {
+        for (Map.Entry<Product.ProductCategory, Pair<Integer,Integer>> entry : checkoutSystem.getDiscountCampaigns().entrySet()) {
             if (entry.getKey().equals(Product.ProductCategory.BOOK) && entry.getValue().equals(Pair.of(3,2))){
                 campaignAdded = true;
+                break;
             }
         }
         //then
-        assertEquals(true, campaignAdded); //
+        assertTrue(campaignAdded);
     }
 
     @Test
@@ -324,7 +323,7 @@ class CheckoutSystemTest {
     }
 
     @Test
-    @Description ("ID 13")
+    @Description("ID 13")
     void Discount_campaign_with_different_prices() {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
@@ -571,7 +570,6 @@ class CheckoutSystemTest {
         for (int i = 0; i < 15; i++) {
             checkoutSystem.registerProduct(products[i]);
         }
-
 
         double total = checkoutSystem.getTotal();
 

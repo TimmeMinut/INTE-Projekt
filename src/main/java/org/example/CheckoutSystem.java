@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-public class CheckoutSystem {
+class CheckoutSystem {
     private final Customer customer;
     private final List<Product> basket = new ArrayList<>();
     private Map<Product.ProductCategory, Pair<Integer, Integer>> discountCampaigns;
@@ -82,7 +82,7 @@ public class CheckoutSystem {
         }
     }
 
-    double getTotalVAT() {
+    private double getTotalVAT() {
         double totalVAT = 0;
         for (Product product : basket) {
             totalVAT += product.getPriceAfterDiscounts() * product.getProductCategory().getVATRate();
@@ -90,7 +90,7 @@ public class CheckoutSystem {
         return totalVAT;
     }
 
-    double getBasketValue() {
+    private double getBasketValue() {
         double totalValue = 0;
         for (Product product : basket) {
             totalValue += product.getVATExclusive();
@@ -135,10 +135,9 @@ public class CheckoutSystem {
         if (campaignProducts.isEmpty()) {
             return appliedDiscountAmount;
         }
-        ;
+
 
         Collections.sort(campaignProducts, Comparator.comparingDouble(Product::getVATExclusive));
-
 
         int discountedQuantity = campaignProducts.size() / take * (take - pay);
 
@@ -163,7 +162,7 @@ public class CheckoutSystem {
         return products;
     }
 
-    void applyMembershipCampaign() {
+    private void applyMembershipCampaign() {
         double membershipDiscount = getMembershipDiscount();
 
         for (Product product : basket) {

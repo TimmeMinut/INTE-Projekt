@@ -1,18 +1,17 @@
 package org.example;
 
-public class Membership {
+class Membership {
 
     private Customer customer;
     private long points;
     private String level; // Bronze, Silver, Gold
 
-    public Membership(Customer customer) {
+    Membership(Customer customer) {
         this.customer = customer;
-        this.points = 0;
         this.level = "Bronze";
     }
 
-    public Customer getCustomer() {
+    Customer getCustomer() {
         return customer;
     }
 

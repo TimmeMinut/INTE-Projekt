@@ -5,7 +5,7 @@ import java.util.List;
 
 // Genererad med Ai, med vissa korrigeringar
 class Money {
-    final int[] denominations = {1000_00, 500_00, 200_00, 100_00, 50_00, 20_00, 10_00, 5_00, 2_00, 1_00};
+    private final int[] denominations = {1000_00, 500_00, 200_00, 100_00, 50_00, 20_00, 10_00, 5_00, 2_00, 1_00};
     private static final int MAJOR_UNIT = 100;
     private long amount;
 
