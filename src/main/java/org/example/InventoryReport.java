@@ -5,13 +5,13 @@ import java.util.Map;
 public class InventoryReport {
     private Inventory inventory;
 
-    public InventoryReport(Inventory inventory) {
+    InventoryReport(Inventory inventory) {
         this.inventory = inventory;
     }
 
 
 
-    public Double generateInventoryValuationReport() {  Map<Product, Integer> productInventory = inventory.getInventory();
+    Double generateInventoryValuationReport() {  Map<Product, Integer> productInventory = inventory.getInventory();
 
         double totalValuation = 0.0;
 

@@ -5,18 +5,18 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Inventory {
+class Inventory {
     private Map<Product, Integer> products;
 
-    public Inventory() {
+    Inventory() {
         products = new HashMap<>();
     }
 
-    public void addProduct(Product product, int amount) {
+    void addProduct(Product product, int amount) {
         products.put(product, amount);
     }
 
-    public Pair<Product, Integer> getProduct(Product product) {
+    Pair<Product, Integer> getProduct(Product product) {
         for (Map.Entry<Product, Integer> entry : products.entrySet()) {
             if(product.equals(entry.getKey())){
                 return Pair.of(entry.getKey(), entry.getValue());
@@ -25,7 +25,7 @@ public class Inventory {
         return null;
     }
 
-    public void removeProduct(Product product, int quantity) {
+    void removeProduct(Product product, int quantity) {
         if (products.containsKey(product)) {
             int currentQuantity = products.get(product);
 
@@ -39,7 +39,7 @@ public class Inventory {
         }
     }
 
-    public Map<Product, Integer> getInventory() {
+    Map<Product, Integer> getInventory() {
         return products;
     }
 }
