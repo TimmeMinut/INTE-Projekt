@@ -9,16 +9,7 @@ class Product {
     private final boolean deposit;
     private double VATValue;
     private double price;
-    private boolean deposit;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Product product)) return false;
-        return Objects.equals(getName(), product.getName());
-    }
-
-    private double discountAmount = 0;
+    private double discountAmount;
 
     Product(String name, double VATExclusive, ProductCategory productCategory, boolean deposit) {
         this.name = name;
@@ -58,7 +49,6 @@ class Product {
         return productCategory;
     }
 
-
     double getPrice() {
         return price;
     }
@@ -80,6 +70,13 @@ class Product {
                 ", price=" + price +
                 ", discountAmount=" + discountAmount +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product product)) return false;
+        return Objects.equals(getName(), product.getName());
     }
 
     enum ProductCategory {
