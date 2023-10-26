@@ -5,16 +5,16 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InventoryTest {
 
 
     @Test
-    void Add_product(){
+    void Add_product() {
         //Given
         Inventory inventory = new Inventory();
-        Product product = new Product("Pen", 10, Product.ProductCategory.STANDARD, false );
+        Product product = new Product("Pen", 10, Product.ProductCategory.STANDARD, false);
 
         //When
         inventory.addProduct(product, 1);
@@ -25,11 +25,11 @@ public class InventoryTest {
     }
 
     @Test
-    void Remove_product(){
+    void Remove_product() {
 
         //Given
         Inventory inventory = new Inventory();
-        Product product = new Product("Pen", 10, Product.ProductCategory.STANDARD, false );
+        Product product = new Product("Pen", 10, Product.ProductCategory.STANDARD, false);
 
         //When
         inventory.addProduct(product, 1);
@@ -40,7 +40,7 @@ public class InventoryTest {
     }
 
     @Test
-    void Get_inventory(){
+    void Get_inventory() {
         //Given
         Inventory inventory = new Inventory();
         Product product1 = new Product("Pen", 10, Product.ProductCategory.STANDARD, false);
@@ -56,6 +56,43 @@ public class InventoryTest {
         assertEquals(2, inventoryMap.size()); // Kontrollera att det finns två produkter i inventory
         assertEquals(10, inventoryMap.get(product1)); // Kontrollera att rätt mängd av produkt 1 finns i inventory
         assertEquals(5, inventoryMap.get(product2)); // Kontrollera att rätt mängd av produkt 2 finns i inventory
+    }
+
+    @Test
+    void get_non_existing_product() {
+        //Given
+        Inventory inventory = new Inventory();
+        Product product1 = new Product("Pen", 10, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("Notebook", 5, Product.ProductCategory.STANDARD, false);
+
+        inventory.addProduct(product1, 10);
+
+        // Then
+        assertNull(inventory.getProduct(product2));
+    }
+
+    @Test
+    void remove_non_existing_product() {
+        //Given
+        Inventory inventory = new Inventory();
+        Product product1 = new Product("Pen", 10, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("Notebook", 5, Product.ProductCategory.STANDARD, false);
+
+        inventory.addProduct(product1, 10);
+
+        assertThrows(IllegalArgumentException.class, () -> inventory.removeProduct(product2, 1));
+    }
+
+    @Test
+    void remove_more_than_existing_products() {
+        //Given
+        Inventory inventory = new Inventory();
+        Product product1 = new Product("Pen", 10, Product.ProductCategory.STANDARD, false);
+
+
+        inventory.addProduct(product1, 10);
+
+        assertThrows(IllegalArgumentException.class, () -> inventory.removeProduct(product1, 15));
     }
 }
 

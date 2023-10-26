@@ -32,10 +32,10 @@ class Inventory {
             if (currentQuantity >= quantity) {
                 products.put(product, currentQuantity - quantity);
             } else {
-                System.out.println("Product quantity is insufficient.");
+                throw new IllegalArgumentException("Product quantity is insufficient.");
             }
         } else {
-            System.out.println("Product not found in inventory.");
+            throw new IllegalArgumentException("Product not found in inventory.");
         }
     }
 
