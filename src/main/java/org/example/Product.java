@@ -1,5 +1,6 @@
 package org.example;
 
+import java.util.List;
 import java.util.Objects;
 
 class Product {
@@ -9,7 +10,7 @@ class Product {
     private final boolean deposit;
     private double VATValue;
     private double price;
-    private double discountAmount;
+    private double discountAmount = 0;
 
     Product(String name, double VATExclusive, ProductCategory productCategory, boolean deposit) {
         this.name = name;
@@ -29,16 +30,12 @@ class Product {
         }
     }
 
-    private void calculateVATValue() {
-        VATValue = VATExclusive * productCategory.getVATRate();
+    double getVATExclusive(){
+        return VATExclusive;
     }
 
     String getName() {
         return name;
-    }
-
-    double getVATExclusive() {
-        return VATExclusive;
     }
 
     double getVATValue() {
@@ -54,13 +51,40 @@ class Product {
     }
 
     void setDiscountAmount(double discountAmount) {
-        this.discountAmount = discountAmount;
+        if(discountAmount > 0 && discountAmount <= VATExclusive){
+            this.discountAmount = discountAmount;
+        }else{
+            throw new IllegalArgumentException("Discount must be greater than '0' and less than VATExclusive ");
+        }
     }
 
-    double getPriceAfterDiscounts() {
-        return VATExclusive - discountAmount;
+    double getPriceAfterDiscount() {
+        double VATExclusiveAfterDiscount = VATExclusive-discountAmount;
+        double VATValueAfterDiscount = VATExclusiveAfterDiscount * productCategory.getVATRate();
+        double priceAfterDiscount = VATExclusiveAfterDiscount + VATValueAfterDiscount;
+
+        if(deposit){
+            priceAfterDiscount += 2;
+        }
+
+        return priceAfterDiscount;
     }
 
+    double getVATExclusiveAfterDiscounts() { return VATExclusive - discountAmount; }
+
+    double getDiscountAmount() { return discountAmount;
+    }
+
+    private void calculateVATValue() {
+        VATValue =  VATExclusive * productCategory.getVATRate();
+    }
+
+    @Override
+     public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product product)) return false;
+        return Objects.equals(getName(), product.getName());
+    }
     @Override
     public String toString() {
         return "Product{" +
@@ -70,13 +94,6 @@ class Product {
                 ", price=" + price +
                 ", discountAmount=" + discountAmount +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Product product)) return false;
-        return Objects.equals(getName(), product.getName());
     }
 
     enum ProductCategory {

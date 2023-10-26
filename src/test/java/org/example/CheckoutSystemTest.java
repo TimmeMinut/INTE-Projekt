@@ -3,11 +3,7 @@ package org.example;
 import jdk.jfr.Description;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
-
-
 import java.util.Map;
-
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class CheckoutSystemTest {
@@ -156,10 +152,11 @@ class CheckoutSystemTest {
     void addDiscountCampaign() {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
-        checkoutSystem.addDiscountCampaign(Product.ProductCategory.BOOK, 3, 2);
         boolean campaignAdded = false;
 
         //when
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.BOOK, 3,2);
+
         for (Map.Entry<Product.ProductCategory, Pair<Integer, Integer>> entry : checkoutSystem.getDiscountCampaigns().entrySet()) {
             if (entry.getKey().equals(Product.ProductCategory.BOOK) && entry.getValue().equals(Pair.of(3, 2))) {
                 campaignAdded = true;
@@ -287,9 +284,9 @@ class CheckoutSystemTest {
         checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
 
         double total = checkoutSystem.getTotal();
-        System.out.println(product1.getPriceAfterDiscounts());
-        System.out.println(product2.getPriceAfterDiscounts());
-        System.out.println(product3.getPriceAfterDiscounts());
+        System.out.println(product1.getVATExclusiveAfterDiscounts());
+        System.out.println(product2.getVATExclusiveAfterDiscounts());
+        System.out.println(product3.getVATExclusiveAfterDiscounts());
         // then
         assertEquals(200 * 1.25, total);
     }
@@ -313,11 +310,11 @@ class CheckoutSystemTest {
         checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 5, 3);
 
         double total = checkoutSystem.getTotal();
-        System.out.println(product1.getPriceAfterDiscounts());
-        System.out.println(product2.getPriceAfterDiscounts());
-        System.out.println(product3.getPriceAfterDiscounts());
-        System.out.println(product4.getPriceAfterDiscounts());
-        System.out.println(product5.getPriceAfterDiscounts());
+        System.out.println(product1.getVATExclusiveAfterDiscounts());
+        System.out.println(product2.getVATExclusiveAfterDiscounts());
+        System.out.println(product3.getVATExclusiveAfterDiscounts());
+        System.out.println(product4.getVATExclusiveAfterDiscounts());
+        System.out.println(product5.getVATExclusiveAfterDiscounts());
 
         assertEquals(300 * 1.25, total);
     }
@@ -340,9 +337,9 @@ class CheckoutSystemTest {
         checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 3, 2);
 
         double total = checkoutSystem.getTotal();
-        System.out.println(product1.getPriceAfterDiscounts());
-        System.out.println(product2.getPriceAfterDiscounts());
-        System.out.println(product3.getPriceAfterDiscounts());
+        System.out.println(product1.getVATExclusiveAfterDiscounts());
+        System.out.println(product2.getVATExclusiveAfterDiscounts());
+        System.out.println(product3.getVATExclusiveAfterDiscounts());
 
 
         assertEquals(200 * 1.25, total);

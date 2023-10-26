@@ -9,12 +9,9 @@ class CheckoutSystem {
     private final List<Product> basket = new ArrayList<>();
     private Map<Product.ProductCategory, Pair<Integer, Integer>> discountCampaigns;
 
-    private Money cashRegister;
-
     CheckoutSystem(Customer currentCustomer) {
         this.customer = currentCustomer;
         this.discountCampaigns = new HashMap<>();
-        this.cashRegister = new Money(25000_00);
     }
 
     void addDiscountCampaign(Product.ProductCategory category, int take, int pay) {
@@ -85,7 +82,7 @@ class CheckoutSystem {
     private double getTotalVAT() {
         double totalVAT = 0;
         for (Product product : basket) {
-            totalVAT += product.getPriceAfterDiscounts() * product.getProductCategory().getVATRate();
+            totalVAT += product.getVATExclusiveAfterDiscounts() * product.getProductCategory().getVATRate();
         }
         return totalVAT;
     }
@@ -187,5 +184,4 @@ class CheckoutSystem {
             System.err.println(e.getMessage());
         }
     }
-
 }
