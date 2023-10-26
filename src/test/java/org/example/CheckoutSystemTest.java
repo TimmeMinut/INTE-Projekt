@@ -158,17 +158,18 @@ class CheckoutSystemTest {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
         Product product = new Product("journal", 25, Product.ProductCategory.BOOK, true);
-        checkoutSystem.addDiscountCampaign(Product.ProductCategory.BOOK, 3,2);
-        Boolean campaignAdded = false;
+        boolean campaignAdded = false;
 
         //when
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.BOOK, 3,2);
+
         for (Map.Entry<Product.ProductCategory, Pair> entry : checkoutSystem.getDiscountCampaigns().entrySet()) {
             if (entry.getKey().equals(Product.ProductCategory.BOOK) && entry.getValue().equals(Pair.of(3,2))){
                 campaignAdded = true;
             }
         }
         //then
-        assertEquals(true, campaignAdded); //
+        assertTrue(campaignAdded); //
     }
 
     @Test

@@ -14,7 +14,7 @@ public class CheckoutSystem {
         this.discountCampaigns = new HashMap<>();
     }
 
-    public void addDiscountCampaign(Product.ProductCategory category, int take, int pay) {
+    void addDiscountCampaign(Product.ProductCategory category, int take, int pay) {
         if (take <= pay) throw new IllegalArgumentException("Take need to be larger than pay!");
 
         discountCampaigns.put(category, Pair.of(take, pay));
