@@ -156,6 +156,23 @@ class ProductTest {
         // then
         assertEquals(expectedPriceAfterDiscount, product.getPriceAfterDiscount(), 0.000001);
     }
+
+    @Test
+    void testToString() {
+        Product product = new Product("Coke", 12, Product.ProductCategory.FOOD, true);
+        String expected = "Product{" +
+                "name='" + "Coke" + '\'' +
+                ", VATExclusive=" + product.getVATExclusive() +
+                ", VATValue=" + product.getVATValue() +
+                ", price=" + product.getPrice() +
+                ", discountAmount=" + product.getDiscountAmount() +
+                '}';
+        String actual = product.toString();
+
+
+
+        assertEquals(expected, actual);
+    }
 }
 
 

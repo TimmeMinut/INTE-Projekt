@@ -51,7 +51,7 @@ class Product {
     }
 
     void setDiscountAmount(double discountAmount) {
-        if(discountAmount > 0 && discountAmount <= VATExclusive){
+        if(discountAmount >= 0 && discountAmount <= VATExclusive){
             this.discountAmount = discountAmount;
         }else{
             throw new IllegalArgumentException("Discount must be greater than '0' and less than VATExclusive ");
