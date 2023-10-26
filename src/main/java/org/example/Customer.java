@@ -7,9 +7,9 @@ class Customer {
     private final String ssn;
     private Membership membership;
     private long bankAccountBalance;
-    private List<Money> wallet;
+    private final List<Money> wallet;
 
-    Customer(String name, String ssn, long bankAccountBalance, Boolean member) {
+    Customer(String name, String ssn, long bankAccountBalance, boolean member) {
         this.name = name;
         this.ssn = ssn;
         this.bankAccountBalance = bankAccountBalance;
@@ -28,22 +28,22 @@ class Customer {
         return ssn;
     }
 
-    long getBankAccountBalance() {
-        return bankAccountBalance;
+    List<Money> getWallet() {
+        return List.copyOf(wallet);
     }
 
     Membership getMembership() {
         return membership;
     }
 
+    long getBankAccountBalance() {
+        return bankAccountBalance;
+    }
+
     void addMoney(long amount) {
         bankAccountBalance += amount;
     }
 
-    List<Money> getWallet() {
-        return wallet;
-        // return copy of
-    }
 
     void payByCard(double total) {
         if (bankAccountBalance < (long) (total * 100))

@@ -15,7 +15,7 @@ class Membership {
         return customer;
     }
 
-    public double getPoints() {
+    public long getPoints() {
         return points;
     }
 

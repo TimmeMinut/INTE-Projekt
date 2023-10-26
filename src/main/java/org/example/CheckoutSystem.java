@@ -23,15 +23,15 @@ class CheckoutSystem {
         discountCampaigns.put(category, Pair.of(take, pay));
     }
 
-    public int getBasketSize() {
+    int getBasketSize() {
         return basket.size();
     }
 
-    public void registerProduct(Product product) {
+    void registerProduct(Product product) {
         basket.add(product);
     }
 
-    public Product getProduct(Product product) {
+    Product getProduct(Product product) {
         Product productFound = null;
         for (Product p : basket) {
             if (product.equals(p)) {
@@ -41,14 +41,14 @@ class CheckoutSystem {
         return productFound;
     }
 
-    public void removeProduct(Product product) {
+    void removeProduct(Product product) {
         if (!basket.contains(product)) {
             throw new IllegalArgumentException("Product is not in basket");
         }
         basket.remove(product);
     }
 
-    public boolean basketContains(Product product) {
+    boolean basketContains(Product product) {
         return basket.contains(product);
     }
 
@@ -114,7 +114,7 @@ class CheckoutSystem {
     private double getDiscountFromCampaigns() {
         double discountAmount = 0;
 
-        if (discountCampaigns == null) {
+        if (discountCampaigns.isEmpty()) {
             return discountAmount;
         }
 

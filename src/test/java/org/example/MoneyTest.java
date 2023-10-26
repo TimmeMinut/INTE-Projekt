@@ -1,13 +1,23 @@
 package org.example;
 
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
+
 // Genererad av Ai, med vissa korrigeringar
 public class MoneyTest {
+
+    private Money money;
+
+    @BeforeEach
+    void setUp() {
+        money = new Money(1000_00);
+    }
 
     @Test
     public void testGetAmountInDenominations_201() {
@@ -81,6 +91,38 @@ public class MoneyTest {
     }
 
 
+    @Test
+    void testAddMoney() {
+        Money other = new Money(500_00);
+        money.add(other);
+        assertEquals(1500_00, money.getTotalMinorUnit());
+    }
 
+    @Test
+    void testAddAmount() {
+        money.add(500_00);
+        assertEquals(1500_00, money.getTotalMinorUnit());
+    }
 
+    @Test
+    void testSubtractMoney() {
+        Money other = new Money(200_00);
+        money.subtract(other);
+        assertEquals(800_00, money.getTotalMinorUnit());
+    }
+
+    @Test
+    void testSubtractAmount() {
+        money.subtract(200_00);
+        assertEquals(800_00, money.getTotalMinorUnit());
+    }
+
+    @Test
+    void testGetTotalMajorUnit() {
+        assertEquals(1000, money.getTotalMajorUnit());
+    }
 }
+
+
+
+

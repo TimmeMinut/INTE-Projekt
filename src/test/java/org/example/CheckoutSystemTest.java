@@ -156,12 +156,12 @@ class CheckoutSystemTest {
     void addDiscountCampaign() {
         // given
         CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
-        checkoutSystem.addDiscountCampaign(Product.ProductCategory.BOOK, 3,2);
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.BOOK, 3, 2);
         boolean campaignAdded = false;
 
         //when
-        for (Map.Entry<Product.ProductCategory, Pair<Integer,Integer>> entry : checkoutSystem.getDiscountCampaigns().entrySet()) {
-            if (entry.getKey().equals(Product.ProductCategory.BOOK) && entry.getValue().equals(Pair.of(3,2))){
+        for (Map.Entry<Product.ProductCategory, Pair<Integer, Integer>> entry : checkoutSystem.getDiscountCampaigns().entrySet()) {
+            if (entry.getKey().equals(Product.ProductCategory.BOOK) && entry.getValue().equals(Pair.of(3, 2))) {
                 campaignAdded = true;
                 break;
             }
@@ -332,7 +332,7 @@ class CheckoutSystemTest {
         Product product2 = new Product("BANANA", 50, Product.ProductCategory.STANDARD, false);
         Product product3 = new Product("APPLE", 100, Product.ProductCategory.STANDARD, false);
 
-         checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product1);
         checkoutSystem.registerProduct(product2);
         checkoutSystem.registerProduct(product3);
 
@@ -638,8 +638,7 @@ class CheckoutSystemTest {
         // Med VATExclusive 50 och 20 st produkter ger både ta 20 betala 19 och 5% membership 50 i discount
 
         // Given
-        Customer customer = new Customer("Memphis", "20001231-2345", 15000_00, true);
-        customer.getMembership().increasePoints(2000); // To gold
+        Customer customer = getGoldCustomer();
         CheckoutSystem checkoutSystem = new CheckoutSystem(customer);
         checkoutSystem.addDiscountCampaign(Product.ProductCategory.STANDARD, 20, 19);
 
@@ -707,5 +706,35 @@ class CheckoutSystemTest {
         assertEquals(3 * 299 * STANDARD_VAT_MULTIPLIER, checkoutSystem.getTotal());
     }
 
+
+    @Test
+    void no_discountCampaigns() {
+        // Given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        Product product1 = new Product("productName", 100, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("productName", 100, Product.ProductCategory.STANDARD, false);
+        checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product2);
+
+        double total = checkoutSystem.getTotal();
+
+        assertEquals(200 * STANDARD_VAT_MULTIPLIER, total);
+    }
+
+    @Test
+    void discountCampaigns_but_no_discounted_products() {
+        // Given
+        CheckoutSystem checkoutSystem = new CheckoutSystem(NON_MEMBER_CUSTOMER);
+        checkoutSystem.addDiscountCampaign(Product.ProductCategory.BOOK, 2, 1);
+
+        Product product1 = new Product("productName", 100, Product.ProductCategory.STANDARD, false);
+        Product product2 = new Product("productName", 100, Product.ProductCategory.STANDARD, false);
+        checkoutSystem.registerProduct(product1);
+        checkoutSystem.registerProduct(product2);
+
+        double total = checkoutSystem.getTotal();
+
+        assertEquals(200 * STANDARD_VAT_MULTIPLIER, total);
+    }
 
 }

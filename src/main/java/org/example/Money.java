@@ -40,13 +40,13 @@ class Money {
     List<Money> getAmountInDenominations() {
         List<Money> denominationList = new ArrayList<>();
         long remainingAmount = this.amount;
-        for (int i = 0; i < denominations.length; i++) {
-            int count = (int) (remainingAmount / denominations[i]);
+        for (int denomination : denominations) {
+            int count = (int) (remainingAmount / denomination);
             if (count != 0) {
                 for (int j = 0; j < count; j++) {
-                    denominationList.add(new Money(denominations[i]));
+                    denominationList.add(new Money(denomination));
                 }
-                remainingAmount -= (long) count * denominations[i];
+                remainingAmount -= (long) count * denomination;
             }
         }
         return denominationList;
