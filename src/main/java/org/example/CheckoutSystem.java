@@ -189,9 +189,6 @@ public class CheckoutSystem {
                 product.setDiscountAmount(product.getVATExclusive());
             }
         };
-        
-
-
     }
 
     public void applyMembershipCampaign() {

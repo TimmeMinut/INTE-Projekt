@@ -112,7 +112,7 @@ class ProductTest {
         product.setDiscountAmount(validDiscount);
 
         //then
-        assertEquals(2, product.getDiscountAmount(validDiscount));
+        assertEquals(2, product.getDiscountAmount());
     }
     @Test
     void Apply_negative_discount(){
@@ -131,7 +131,7 @@ class ProductTest {
         double validDiscount = 10;
 
         //when && then
-        assertEquals(0, product.getDiscountAmount(validDiscount));
+        assertEquals(0, product.getDiscountAmount());
     }
 
     @Test
@@ -157,7 +157,6 @@ class ProductTest {
         // then
         assertEquals(expectedPriceAfterDiscount, product.getPriceAfterDiscount(), 0.000001);
     }
-
 }
 
 

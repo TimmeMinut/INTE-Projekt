@@ -1,8 +1,9 @@
 package org.example;
 
+import java.util.List;
 import java.util.Objects;
 
-public class Product {
+class Product {
     final private String name;
     final private ProductCategory productCategory;
     final private double VATExclusive;
@@ -11,15 +12,7 @@ public class Product {
     final private boolean deposit;
     private double discountAmount = 0;
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Product product)) return false;
-        return Objects.equals(getName(), product.getName());
-    }
-
-    public Product(String name, double VATExclusive, ProductCategory productCategory, boolean deposit) {
+     Product(String name, double VATExclusive, ProductCategory productCategory, boolean deposit) {
         this.name = name;
         this.VATExclusive = VATExclusive;
         this.deposit = deposit;
@@ -37,29 +30,28 @@ public class Product {
         }
     }
 
-    private void calculateVATValue() {
-        VATValue =  VATExclusive * productCategory.getVATRate();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public double getVATExclusive(){
+    double getVATExclusive(){
         return VATExclusive;
     }
 
-    public double getVATValue() {
+    String getName() {
+        return name;
+    }
+
+    double getVATValue() {
         return VATValue;
     }
 
-    public ProductCategory getProductCategory() {
+    ProductCategory getProductCategory() {
         return productCategory;
     }
 
-
-    public double getPrice() {
+    double getPrice() {
         return price;
+    }
+
+    private void calculateVATValue() {
+        VATValue =  VATExclusive * productCategory.getVATRate();
     }
 
     void setDiscountAmount(double discountAmount) {
@@ -81,13 +73,19 @@ public class Product {
 
 
         return priceAfterDiscount;
-
-
     }
 
-    public double getVATExclusiveAfterDiscounts() { return VATExclusive - discountAmount; }
+    double getVATExclusiveAfterDiscounts() { return VATExclusive - discountAmount; }
 
+    double getDiscountAmount() { return discountAmount;
+    }
 
+    @Override
+     public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product product)) return false;
+        return Objects.equals(getName(), product.getName());
+    }
     @Override
     public String toString() {
         return "Product{" +
@@ -99,10 +97,7 @@ public class Product {
                 '}';
     }
 
-    public double getDiscountAmount(double discount) { return discountAmount;
-    }
-
-    public enum ProductCategory {
+    enum ProductCategory {
         BOOK(0.06),
         FOOD(0.12),
         STANDARD(0.25);
@@ -113,7 +108,7 @@ public class Product {
             this.VATRate = VATRate;
         }
 
-        public double getVATRate() {
+        double getVATRate() {
             return VATRate;
         }
     }
